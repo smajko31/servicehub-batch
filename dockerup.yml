@@ -1,10 +1,10 @@
 version: "3.6"
 
 networks:
-  net_person:
+  net_batch:
 
 services:
-  svc_person:
+  svc_batch:
     image: revaturecloud/servicehub-batch:edge
     deploy:
       replicas: 3
