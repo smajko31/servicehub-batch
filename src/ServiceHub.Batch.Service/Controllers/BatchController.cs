@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ServiceHub.Batch.Service.Controllers
 {
-  [Route("api/[conroller]")]
+  [Route("api/[controller]")]
   public class BatchController : Controller
   {
     public async Task<IActionResult> Get()
