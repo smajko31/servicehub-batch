@@ -1,11 +1,13 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace ServiceHub.Batch.Service.Controllers
 {
   [Route("api/[controller]")]
-  public class BatchController : Controller
+  public class BatchController : BaseController
   {
+    public BatchController(ILoggerFactory loggerFactory) : base(loggerFactory) {}
     public async Task<IActionResult> Get()
     {
       return await Task.Run(() => Ok());
