@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -20,13 +21,30 @@ namespace ServiceHub.Batch.Service.Controllers
       queueClient = queueClientSingleton;
     }
 
-    protected virtual Task ReceiverExceptionHandler(ExceptionReceivedEventArgs exceptionReceivedEventArgs) =>
-      throw new NotImplementedException();
+    protected virtual async Task ReceiverExceptionHandler(ExceptionReceivedEventArgs exceptionReceivedEventArgs)
+    {
+      logger.LogError(exceptionReceivedEventArgs.Exception.ToString());
+      await Task.CompletedTask;
+    }
 
-    protected virtual Task ReceiverMessageProcessAsync(Message message, CancellationToken cancellationToken) =>
-      throw new NotImplementedException();
+    protected virtual async Task ReceiverMessageProcessAsync(Message message, CancellationToken cancellationToken)
+    {
+      if (null == message || cancellationToken.IsCancellationRequested)
+      {
+        return;
+      }
+
+      if (message.SystemProperties.IsLockTokenSet)
+      {
+        logger.LogInformation($"{message.MessageId}\n{Encoding.UTF8.GetString(message.Body)}");
+        await queueClient.CompleteAsync(message.SystemProperties.LockToken);
+      }
+    }
     
-    protected virtual Task SenderMessageProcessAsync(Message message) =>
-      throw new NotImplementedException();
+    protected virtual async Task SenderMessageProcessAsync(Message message)
+    {
+      logger.LogInformation(message.MessageId);
+      await queueClient.SendAsync(message);
+    }
   }
 }
