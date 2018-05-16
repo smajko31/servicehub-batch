@@ -41,10 +41,21 @@ namespace ServiceHub.Batch.Service.Controllers
       return await Task.Run(() => Ok());
     }
 
-    protected override void UseReceiver() =>
-      throw new NotImplementedException();
+    protected override void UseReceiver()
+    {
+      var messageHandlerOptions = new MessageHandlerOptions(ReceiverExceptionHandler)
+      {
+        AutoComplete = false
+      };
+
+      queueClient.RegisterMessageHandler(ReceiverMessageProcessAsync, messageHandlerOptions);
+    }
     
-    protected override void UseSender(Message message) =>
-      throw new NotImplementedException();
+    protected override void UseSender(Message message)
+    {
+      Task.Run(() =>
+        SenderMessageProcessAsync(message)
+      );
+    }
   }
 }
