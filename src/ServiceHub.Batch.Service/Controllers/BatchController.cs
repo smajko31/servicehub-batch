@@ -1,5 +1,7 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.ServiceBus;
 using Microsoft.Extensions.Logging;
 
 namespace ServiceHub.Batch.Service.Controllers
@@ -7,7 +9,9 @@ namespace ServiceHub.Batch.Service.Controllers
   [Route("api/[controller]")]
   public class BatchController : BaseController
   {
-    public BatchController(ILoggerFactory loggerFactory) : base(loggerFactory) {}
+    public BatchController(ILoggerFactory loggerFactory, IQueueClient queueClientSingleton)
+      : base(loggerFactory, queueClientSingleton) {}
+    
     public async Task<IActionResult> Get()
     {
       return await Task.Run(() => Ok());
@@ -35,6 +39,23 @@ namespace ServiceHub.Batch.Service.Controllers
     public async Task<IActionResult> Delete(int id)
     {
       return await Task.Run(() => Ok());
+    }
+
+    protected override void UseReceiver()
+    {
+      var messageHandlerOptions = new MessageHandlerOptions(ReceiverExceptionHandler)
+      {
+        AutoComplete = false
+      };
+
+      queueClient.RegisterMessageHandler(ReceiverMessageProcessAsync, messageHandlerOptions);
+    }
+    
+    protected override void UseSender(Message message)
+    {
+      Task.Run(() =>
+        SenderMessageProcessAsync(message)
+      );
     }
   }
 }
