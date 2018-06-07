@@ -3,6 +3,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ServiceHub.Batch.Library.Models
 {
+    /// <summary>
+    /// Address Model
+    /// Contains all information about location.
+    /// </summary>
+    /// <remarks>
+    /// Used in Batch model to specify location of training.
+    /// </remarks>
     public class Address
     {
         [Required]
