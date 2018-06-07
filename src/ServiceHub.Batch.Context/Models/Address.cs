@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using System;
 
 namespace ServiceHub.Batch.Context.Models
 {
@@ -13,6 +12,7 @@ namespace ServiceHub.Batch.Context.Models
     /// </remarks>
     public class Address
     {
+        [BsonId]
         public Guid AddressId { get; set; }
         public string Address1 { get; set; }
         public string Address2 { get; set; }

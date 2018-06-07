@@ -1,6 +1,6 @@
-﻿using System;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace ServiceHub.Batch.Context.Models
 {
@@ -15,6 +15,7 @@ namespace ServiceHub.Batch.Context.Models
     public class Batch
     {
         /// <value> Unique batch id </value>
+        [BsonId]
         public Guid BatchId { get; set; }
         /// <value> Start date of training </value>
         public DateTime StartDate { get; set; }
