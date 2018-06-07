@@ -14,27 +14,27 @@ namespace ServiceHub.Batch.Library.Models
     /// </remarks>
     public class Batch
     {
-        // Unique batch id
+        /// <value> Unique batch id </value>
         [Required]
         public Guid BatchId { get; set; }
-        // Start date of training
+        /// <value> Start date of training </value>
         [DataType(DataType.Date)]
         public DateTime StartDate { get; set; }
-        // Expected training end date
+        /// <value> Expected training end date </value>
         [DataType(DataType.Date)]
         public DateTime EndDate { get; set; }
-        // Specific name of batch
+        /// <value> Specific name of batch </value>
         [StringLength(50)]
         public string BatchName { get; set; }
-        // Total number of people in batch
+        /// <value> Total number of people in batch </value>
         [Range(0, 100)]
         public int BatchOccupancy { get; set; }
-        // Batch technology stack 
+        /// <value> Batch technology stack </value>
         [StringLength(50)]
         public string BatchSkill { get; set; }
-        // Address where training takes place
+        /// <value> Address where training takes place </value>
         public Address Address { get; set; }
-        // List of associate ids in batch
+        /// <value> List of associate ids in batch </value>
         public List<Guid> UserIds { get; set; }
     }
 }
