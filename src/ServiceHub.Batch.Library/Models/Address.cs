@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ServiceHub.Address.Library.Models
+namespace ServiceHub.Batch.Library.Models
 {
     /// <summary>
     /// Address helper model
@@ -54,9 +54,9 @@ namespace ServiceHub.Address.Library.Models
         /// <summary>
         /// Converts Context address model into Library address model
         /// </summary>
-        /// <param name="addressContext">Address model in Context project</param>
-        /// <returns>Address model in Library project</returns>
-        public static Address ToLibraryAddress(Context.Models.Address addressContext)
+        /// <param name="addressContext">Address context model</param>
+        /// <returns>Address library model</returns>
+        public static Address ToLibraryModel(Context.Models.Address addressContext)
         {
             Address addressLibrary = new Address();
             addressLibrary.AddressId = addressContext.AddressId;
@@ -73,8 +73,8 @@ namespace ServiceHub.Address.Library.Models
         /// <summary>
         /// Converts Library address model into Context address model
         /// </summary>
-        /// <param name="addressLibrary">Address model in Library project</param>
-        /// <returns>Address model in Context project</returns>
+        /// <param name="addressLibrary">Address library model</param>
+        /// <returns>Address context model</returns>
         public static Context.Models.Address ToContextModel(Address addressLibrary)
         {
             Context.Models.Address addressContext = new Context.Models.Address();
