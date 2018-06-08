@@ -30,7 +30,7 @@ namespace ServiceHub.Batch.Context.Utilities
         }
 
         /// <value> Get all batches from injected IUtility class repo </value>
-        List<Models.Batch> GetAllBatches()
+        IEnumerable<Models.Batch> GetAllBatches()
         {
             return utility.GetAllBatches();
         }

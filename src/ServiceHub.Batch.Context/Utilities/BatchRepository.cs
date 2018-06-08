@@ -40,13 +40,13 @@ namespace ServiceHub.Batch.Context.Utilities
         /// </summary>
         /// <param name="batch">Batch Model</param>
         /// <returns></returns>
-        public async void AddBatch(Models.Batch batch)
+        public void AddBatch(Models.Batch batch)
         {
             if (batch == null)
             {
                 throw new ArgumentNullException(nameof(batch));
             }
-            await _collection.InsertOneAsync(batch);
+            _collection.InsertOne(batch);
         }
 
         /// <summary>
@@ -54,19 +54,26 @@ namespace ServiceHub.Batch.Context.Utilities
         /// </summary>
         /// <param name="id">Unique Batch identifier</param>
         /// <returns></returns>
-        public async void DeleteBatch(Guid id)
+        public void DeleteBatch(Guid id)
         {
-            await _collection.DeleteOneAsync(b => b.BatchId == id);
+            if (id == null)
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+            _collection.DeleteOne(batch => batch.BatchId == id);
         }
 
         /// <summary>
         /// Gets all the batches
         /// </summary>
         /// <returns></returns>
-        public async Task<IEnumerable<Models.Batch>> GetAllBatches()
+        public IEnumerable<Models.Batch> GetAllBatches()
         {
-            var stuff = await _collection.Find(new BsonDocument()).ToListAsync();
-            return stuff;
+            if (_collection == null)
+            {
+                throw new ArgumentNullException(nameof(_collection));
+            }
+            return _collection.Find(new BsonDocument()).ToList(); 
         }
 
         /// <summary>
@@ -74,9 +81,13 @@ namespace ServiceHub.Batch.Context.Utilities
         /// </summary>
         /// <param name="id">Unique Batch identifier</param>
         /// <returns></returns>
-        public async Task<Models.Batch> GetBatchById(Guid id)
+        public Models.Batch GetBatchById(Guid id)
         {
-            Models.Batch result = await _collection.Find(b => b.BatchId == id).FirstAsync();
+            if (id == null)
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+            Models.Batch result = _collection.Find(b => b.BatchId == id).First();
             return result;
         }
 
@@ -85,14 +96,13 @@ namespace ServiceHub.Batch.Context.Utilities
         /// </summary>
         /// <param name="batch">Batch Model</param>
         /// <returns></returns>
-        public async void UpdateBatch(Models.Batch batch)
+        public void UpdateBatch(Models.Batch batch)
         {
             if (batch == null)
             {
                 throw new ArgumentNullException(nameof(batch));
             }
-            var replaceOneResult = await _collection.ReplaceOneAsync(
-                dbatch => dbatch.BatchId == batch.BatchId, batch);
+            _collection.FindOneAndReplace(dbatch => dbatch.BatchId == batch.BatchId, batch);
         }
     }
 }
