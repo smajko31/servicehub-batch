@@ -40,7 +40,7 @@ namespace ServiceHub.Batch.Context.Utilities
         /// </summary>
         /// <param name="batch">Batch Model</param>
         /// <returns></returns>
-        public async Task AddBatch(Models.Batch batch)
+        public async void AddBatch(Models.Batch batch)
         {
             if (batch == null)
             {
@@ -54,7 +54,7 @@ namespace ServiceHub.Batch.Context.Utilities
         /// </summary>
         /// <param name="id">Unique Batch identifier</param>
         /// <returns></returns>
-        public async Task DeleteBatch(Guid id)
+        public async void DeleteBatch(Guid id)
         {
             await _collection.DeleteOneAsync(b => b.BatchId == id);
         }
@@ -85,7 +85,7 @@ namespace ServiceHub.Batch.Context.Utilities
         /// </summary>
         /// <param name="batch">Batch Model</param>
         /// <returns></returns>
-        public async Task UpdateBatch(Models.Batch batch)
+        public async void UpdateBatch(Models.Batch batch)
         {
             if (batch == null)
             {

@@ -11,10 +11,10 @@ namespace ServiceHub.Batch.Context.Utilities
     /// </summary>
     public interface IUtility
     {
-        Task <Models.Batch> GetBatchById(Guid id);
+        Models.Batch GetBatchById(Guid id);
         Task <IEnumerable<Models.Batch>> GetAllBatches();
-        Task AddBatch(Models.Batch batch);
-        Task UpdateBatch(Models.Batch batch);
-        Task DeleteBatch(Guid id);
+        void AddBatch(Models.Batch batch);
+        void UpdateBatch(Models.Batch batch);
+        void DeleteBatch(Guid id);
     }
 }
