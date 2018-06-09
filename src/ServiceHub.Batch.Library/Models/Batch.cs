@@ -61,6 +61,7 @@ namespace ServiceHub.Batch.Library.Models
             if (EndDate == null) { return false; }
             if (String.IsNullOrEmpty(BatchName)) { return false; }
             if (BatchOccupancy == null) { return false; }
+            if (BatchOccupancy < 0 || BatchOccupancy > 100) { return false; }
             if (String.IsNullOrEmpty(BatchSkill)) { return false; }
             if (Address == null) { return false; }
             if (UserIds?.Any() != true) { return false; }

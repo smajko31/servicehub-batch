@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace ServiceHub.Batch.Library.Models
 {
@@ -35,7 +36,7 @@ namespace ServiceHub.Batch.Library.Models
         }
 
         /// <summary>
-        /// Check if object has any invalid (default) property values
+        /// Check if object has any invalid property values
         /// </summary>
         /// <returns>Returns false if any value is invalid, else true</returns>
         public bool Validate()
@@ -46,6 +47,14 @@ namespace ServiceHub.Batch.Library.Models
             if (String.IsNullOrEmpty(State)) { return false; }
             if (String.IsNullOrEmpty(PostalCode)) { return false; }
             if (String.IsNullOrEmpty(Country)) { return false; }
+
+            if (PostalCode.Length != 5) { return false; }
+            if (Country.Length != 2) { return false; }
+            if (State.Length != 2) { return false; }
+
+            if (!PostalCode.All(Char.IsDigit)) { return false; }
+            if (!Country.All(Char.IsLetter)) { return false; }
+            if (!State.All(Char.IsLetter)) { return false; }
 
             return true;
         }
