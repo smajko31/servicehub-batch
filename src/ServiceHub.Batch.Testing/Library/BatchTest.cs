@@ -7,7 +7,7 @@ namespace ServiceHub.Batch.Testing.Library
     public class BatchTest
     {
         /// <value> Batch model to have all valid properties </value>
-        Batch.Library.Models.Batch batch;
+        readonly Batch.Library.Models.Batch batch;
 
         /// <summary>
         /// Create a valid Batch model to create copies per unit test, and test

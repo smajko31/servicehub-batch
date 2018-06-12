@@ -7,7 +7,7 @@ namespace ServiceHub.Batch.Testing.Library
     public class AddressTest
     {
         /// <value> Address model to have all valid properties </value>
-        Batch.Library.Models.Address address;
+        readonly Batch.Library.Models.Address address;
 
         /// <summary>
         /// Create a valid Address model to create copies per unit test, and test
@@ -114,8 +114,12 @@ namespace ServiceHub.Batch.Testing.Library
             new object[]{ string.Empty, false },
             new object[]{ null, false },
             new object[]{ "FL", true },
+            new object[]{ "NY", true },
+            new object[]{ "IA", true },
+            new object[]{ "fl", true },
+            new object[]{ "ky", true },
             new object[]{ 12.ToString(), false },
-            new object[]{ "AA", true },
+            new object[]{ "AA", false },
             new object[]{ "A1", false },
             new object[]{ "99", false },
         };
@@ -168,12 +172,35 @@ namespace ServiceHub.Batch.Testing.Library
         }
 
         /// <summary>
+        /// Create complex type for testing country property
+        /// Used for TestValidCountry(string countryCode, bool expected)
+        /// </summary>
+        public static readonly List<object[]> CountryTestCases = new List<object[]>
+        {
+            new object[]{ "", false },
+            new object[]{ "testestest", false },
+            new object[]{ "       ", false },
+            new object[]{ 12345.ToString(), false },
+            new object[]{ string.Empty, false },
+            new object[]{ null, false },
+            new object[]{ "FL", false },
+            new object[]{ "NY", false },
+            new object[]{ "IA", false },
+            new object[]{ "US", true },
+            new object[]{ "us", true },
+            new object[]{ 12.ToString(), false },
+            new object[]{ "AA", false },
+            new object[]{ "A1", false },
+            new object[]{ "99", false },
+        };
+
+        /// <summary>
         /// Test for valid state
         /// </summary>
         /// <param name="country">country code</param>
         /// <param name="expected">expected bool value</param>
         [Theory]
-        [MemberData(nameof(StateTestCases))]
+        [MemberData(nameof(CountryTestCases))]
         public void TestValidCountry(string countryCode, bool expected)
         {
             Batch.Library.Models.Address addressTemp = address;
