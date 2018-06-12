@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using Xunit;
 
 namespace ServiceHub.Batch.Testing.Library
@@ -7,7 +8,7 @@ namespace ServiceHub.Batch.Testing.Library
     public class AddressTest
     {
         /// <value> Address model to have all valid properties </value>
-        Batch.Library.Models.Address address;
+        readonly Batch.Library.Models.Address address;
 
         /// <summary>
         /// Create a valid Address model to create copies per unit test, and test
@@ -62,16 +63,16 @@ namespace ServiceHub.Batch.Testing.Library
         /// Used for TestValidAddress(string address1, bool expected)
         /// and TestValidCity(string city, bool expected)
         /// </summary>
-        public static readonly List<object[]> AddressTestCases = new List<object[]>
-        {
-            new object[]{ "", false },
-            new object[]{ "testestest", true },
-            new object[]{ "helloW!@# worldlwR#R", true },
-            new object[]{ "       ", true },
-            new object[]{ 12345.ToString(), true },
-            new object[]{ string.Empty, false },
-            new object[]{ null, false }
-        };
+        public static readonly ImmutableList<object[]> AddressTestCases = ImmutableList.Create
+        (
+            new object[] { "", false },
+            new object[] { "testestest", true },
+            new object[] { "helloW!@# worldlwR#R", true },
+            new object[] { "       ", true },
+            new object[] { 12345.ToString(), true },
+            new object[] { string.Empty, false },
+            new object[] { null, false }
+        );
 
         /// <summary>
         /// Test for valid street addresses
@@ -105,8 +106,8 @@ namespace ServiceHub.Batch.Testing.Library
         /// Create complex type for testing state property
         /// Used for TestValidState(string state, bool expected)
         /// </summary>
-        public static readonly List<object[]> StateTestCases = new List<object[]>
-        {
+        public static readonly ImmutableList<object[]> StateTestCases = ImmutableList.Create
+        (
             new object[]{ "", false },
             new object[]{ "testestest", false },
             new object[]{ "       ", false },
@@ -114,11 +115,15 @@ namespace ServiceHub.Batch.Testing.Library
             new object[]{ string.Empty, false },
             new object[]{ null, false },
             new object[]{ "FL", true },
+            new object[]{ "NY", true },
+            new object[]{ "IA", true },
+            new object[]{ "fl", true },
+            new object[]{ "ky", true },
             new object[]{ 12.ToString(), false },
-            new object[]{ "AA", true },
+            new object[]{ "AA", false },
             new object[]{ "A1", false },
-            new object[]{ "99", false },
-        };
+            new object[]{ "99", false }
+        );
 
         /// <summary>
         /// Test for valid state
@@ -138,8 +143,8 @@ namespace ServiceHub.Batch.Testing.Library
         /// Create complex type for testing postal code property
         /// Used for TestValidPostalCode(string postalCode, bool expected)
         /// </summary>
-        public static readonly List<object[]> PostalCodeTestCases = new List<object[]>
-        {
+        public static readonly ImmutableList<object[]> PostalCodeTestCases = ImmutableList.Create
+        (
             new object[]{ "", false },
             new object[]{ "testestest", false },
             new object[]{ "       ", false },
@@ -150,8 +155,8 @@ namespace ServiceHub.Batch.Testing.Library
             new object[]{ "1234", false },
             new object[]{ "123456", false },
             new object[]{ "fffff", false },
-            new object[]{ "1234a", false },
-        };
+            new object[]{ "1234a", false }
+        );
 
         /// <summary>
         /// Test for valid postal code
@@ -168,12 +173,35 @@ namespace ServiceHub.Batch.Testing.Library
         }
 
         /// <summary>
+        /// Create complex type for testing country property
+        /// Used for TestValidCountry(string countryCode, bool expected)
+        /// </summary>
+        public static readonly ImmutableList<object[]> CountryTestCases = ImmutableList.Create
+        (
+            new object[]{ "", false },
+            new object[]{ "testestest", false },
+            new object[]{ "       ", false },
+            new object[]{ 12345.ToString(), false },
+            new object[]{ string.Empty, false },
+            new object[]{ null, false },
+            new object[]{ "FL", false },
+            new object[]{ "NY", false },
+            new object[]{ "IA", false },
+            new object[]{ "US", true },
+            new object[]{ "us", true },
+            new object[]{ 12.ToString(), false },
+            new object[]{ "AA", false },
+            new object[]{ "A1", false },
+            new object[]{ "99", false }
+        );
+
+        /// <summary>
         /// Test for valid state
         /// </summary>
         /// <param name="country">country code</param>
         /// <param name="expected">expected bool value</param>
         [Theory]
-        [MemberData(nameof(StateTestCases))]
+        [MemberData(nameof(CountryTestCases))]
         public void TestValidCountry(string countryCode, bool expected)
         {
             Batch.Library.Models.Address addressTemp = address;

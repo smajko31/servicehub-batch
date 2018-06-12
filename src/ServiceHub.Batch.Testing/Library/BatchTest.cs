@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using Xunit;
 
 namespace ServiceHub.Batch.Testing.Library
@@ -7,7 +8,7 @@ namespace ServiceHub.Batch.Testing.Library
     public class BatchTest
     {
         /// <value> Batch model to have all valid properties </value>
-        Batch.Library.Models.Batch batch;
+        readonly Batch.Library.Models.Batch batch;
 
         /// <summary>
         /// Create a valid Batch model to create copies per unit test, and test
@@ -63,13 +64,13 @@ namespace ServiceHub.Batch.Testing.Library
         /// Used for TestValidStartDate(DateTime? date, bool expected)
         /// and TestValidEndDate(DateTime? date, bool expected)
         /// </summary>
-        public static readonly List<object[]> DateTestCases = new List<object[]>
-        {
+        public static readonly ImmutableList<object[]> DateTestCases = ImmutableList.Create
+        (
             new object[]{ DateTime.Now, true },
             new object[]{ DateTime.UtcNow, true },
             new object[]{ DateTime.Today, true },
             new object[]{ null, false }
-        };
+        );
 
         /// <summary>
         /// Test for valid start dates
@@ -103,8 +104,8 @@ namespace ServiceHub.Batch.Testing.Library
         /// Create complex type for testing BatchName property
         /// Used for TestValidBatchName(string batchName, bool expected)
         /// </summary>
-        public static readonly List<object[]> BatchNameTestCases = new List<object[]>
-        {
+        public static readonly ImmutableList<object[]> BatchNameTestCases = ImmutableList.Create
+        (
             new object[]{ "", false },
             new object[]{ "1804-apr-net", true },
             new object[]{ "some-java-batch", true },
@@ -112,7 +113,7 @@ namespace ServiceHub.Batch.Testing.Library
             new object[]{ 12345.ToString(), true },
             new object[]{ string.Empty, false },
             new object[]{ null, false }
-        };
+        );
 
         /// <summary>
         /// Test for valid batch names
@@ -132,14 +133,14 @@ namespace ServiceHub.Batch.Testing.Library
         /// Create complex type for testing BatchOccupancy property
         /// Used for TestValidBatchOccupancy(int? batchOccupancy, bool expected)
         /// </summary>
-        public static readonly List<object[]> BatchOccupancyTestCases = new List<object[]>
-        {
+        public static readonly ImmutableList<object[]> BatchOccupancyTestCases = ImmutableList.Create
+        (
             new object[]{ -100, false },
             new object[]{ 0, true },
             new object[]{ 50, true },
             new object[]{ 2000, false },
             new object[]{ null, false }
-        };
+        );
 
         /// <summary>
         /// Test for valid batch occupancy number
@@ -159,8 +160,8 @@ namespace ServiceHub.Batch.Testing.Library
         /// Create complex type for testing BatchSkill property
         /// Used for TestValidBatchSkill(string batchSkill, bool expected)
         /// </summary>
-        public static readonly List<object[]> BatchSkillTestCases = new List<object[]>
-        {
+        public static readonly ImmutableList<object[]> BatchSkillTestCases = ImmutableList.Create
+        (
             new object[]{ "", false },
             new object[]{ "Java", true },
             new object[]{ "C# .NET", true },
@@ -168,7 +169,7 @@ namespace ServiceHub.Batch.Testing.Library
             new object[]{ 12345.ToString(), true },
             new object[]{ string.Empty, false },
             new object[]{ null, false }
-        };
+        );
 
         /// <summary>
         /// Test for valid batch skill strings
@@ -188,13 +189,13 @@ namespace ServiceHub.Batch.Testing.Library
         /// Create complex type for testing Address property
         /// Used for TestValidAddress(Batch.Library.Models.Address address, bool expected)
         /// </summary>
-        public static readonly List<object[]> AddressTestCases = new List<object[]>
-        {
+        public static readonly ImmutableList<object[]> AddressTestCases = ImmutableList.Create
+        (
             new object[]{ null, false },
             new object[]{ new Batch.Library.Models.Address(), true },
             new object[]{ new Batch.Library.Models.Address() { Country = "US" }, true },
-            new object[]{ new Batch.Library.Models.Address() { Address1 = "Test Street" }, true },
-        };
+            new object[]{ new Batch.Library.Models.Address() { Address1 = "Test Street" }, true }
+        );
 
         /// <summary>
         /// Test for valid address
@@ -214,13 +215,13 @@ namespace ServiceHub.Batch.Testing.Library
         /// Create complex type for testing UserIds property
         /// Used for TestUserIds(List<Guid> userIds, bool expected)
         /// </summary>
-        public static readonly List<object[]> UserIdsTestCases = new List<object[]>
-        {
+        public static readonly ImmutableList<object[]> UserIdsTestCases = ImmutableList.Create
+        (
             new object[]{ null, false },
             new object[]{ new List<Guid>(), false },
             new object[]{ new List<Guid> { Guid.NewGuid() }, true },
             new object[]{ new List<Guid> { Guid.NewGuid(), Guid.NewGuid() }, true }
-        };
+        );
 
         /// <summary>
         /// Test for valid userIds list

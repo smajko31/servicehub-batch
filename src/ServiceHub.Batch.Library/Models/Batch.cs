@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace ServiceHub.Batch.Library.Models
 {
@@ -12,23 +13,32 @@ namespace ServiceHub.Batch.Library.Models
     /// A batch refers to a training period for Revature associates. Model includes following information:
     /// unique batch id, start/end date, technology stack, location, number of associates and list of associates.
     /// </remarks>
+    [DataContract]
     public class Batch
     {
         /// <value> Unique batch id </value>
+        [DataMember]
         public Guid BatchId { get; set; }
         /// <value> Start date of training </value>
+        [DataMember]
         public DateTime? StartDate { get; set; }
         /// <value> Expected training end date </value>
+        [DataMember]
         public DateTime? EndDate { get; set; }
         /// <value> Specific name of batch </value>
+        [DataMember]
         public string BatchName { get; set; }
         /// <value> Total number of people in batch </value>
+        [DataMember]
         public int? BatchOccupancy { get; set; }
         /// <value> Batch technology stack </value>
+        [DataMember]
         public string BatchSkill { get; set; }
         /// <value> Address where training takes place </value>
+        [DataMember]
         public Address Address { get; set; }
         /// <value> List of associate ids in batch </value>
+        [DataMember]
         public List<Guid> UserIds { get; set; }
 
         /// <summary>
@@ -68,47 +78,5 @@ namespace ServiceHub.Batch.Library.Models
 
             return true;
         }
-
-        /* TODO: Uncomment when Batch model exists in Context project
-        /// <summary>
-        /// Converts Context batch model into Library batch model
-        /// </summary>
-        /// <param name="batchContext">Batch context model</param>
-        /// <returns>Batch library model</returns>
-        public static Batch ToLibraryModel(Context.Models.Batch batchContext)
-        {
-            Batch batchLibrary = new Batch();
-            batchLibrary.BatchId = batchContext.BatchId;
-            batchLibrary.StartDate = batchContext.StartDate;
-            batchLibrary.EndDate = batchContext.EndDate;
-            batchLibrary.BatchName = batchContext.BatchName;
-            batchLibrary.BatchOccupancy = batchContext.BatchOccupancy;
-            batchLibrary.BatchSkill = batchContext.BatchSkill;
-            batchLibrary.Address = Address.ToLibraryModel(batchContext.Address);
-            batchLibrary.UserIds = batchContext.BatchUserIds;
-
-            return batchLibrary;
-        }
-
-        /// <summary>
-        /// Converts Library batch model into Context batch model
-        /// </summary>
-        /// <param name="batchLibrary">Batch library model</param>
-        /// <returns>Batch context model</returns>
-        public static Context.Models.Batch ToContextModel(Batch batchLibrary)
-        {
-            Context.Models.Batch batchContext = new Context.Models.Batch();
-            batchContext.BatchId = batchLibrary.BatchId;
-            batchContext.StartDate = batchLibrary.StartDate;
-            batchContext.EndDate = batchLibrary.EndDate;
-            batchContext.BatchName = batchLibrary.BatchName;
-            batchContext.BatchOccupancy = batchLibrary.BatchOccupancy;
-            batchContext.BatchSkill = batchLibrary.BatchSkill;
-            batchContext.Address = Address.ToContextModel(batchLibrary.Address);
-            batchContext.UserIds = batchLibrary.UserIds;
-
-            return batchContext;
-        }
-        */
     }
 }
