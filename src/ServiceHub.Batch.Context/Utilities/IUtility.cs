@@ -12,7 +12,7 @@ namespace ServiceHub.Batch.Context.Utilities
     public interface IUtility
     {
         List<Library.Models.Batch> GetBatchesBySkill(string skill);
-        List<Library.Models.Batch> GetBatchesByLocation(string city, string state);
+        List<Library.Models.Batch> GetBatchesByLocation(string state);
         List<Library.Models.Batch> GetAllBatches();
         void AddBatch(Library.Models.Batch batch);
         void UpdateBatch(Library.Models.Batch batch);
