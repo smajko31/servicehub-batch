@@ -25,7 +25,7 @@ namespace ServiceHub.Batch.Testing.Library
                 BatchName = "TestBatch",
                 BatchOccupancy = 30,
                 BatchSkill = ".NET",
-                Address = new Batch.Library.Models.Address(),
+                State = "Fl",
                 UserIds = new List<Guid>() { Guid.NewGuid(), Guid.NewGuid() }
             };
         }
@@ -138,7 +138,7 @@ namespace ServiceHub.Batch.Testing.Library
             new object[]{ -100, false },
             new object[]{ 0, true },
             new object[]{ 50, true },
-            new object[]{ 2000, false },
+            new object[]{ 2000, true },
             new object[]{ null, false }
         );
 
@@ -186,28 +186,39 @@ namespace ServiceHub.Batch.Testing.Library
         }
 
         /// <summary>
-        /// Create complex type for testing Address property
-        /// Used for TestValidAddress(Batch.Library.Models.Address address, bool expected)
+        /// Create complex type for testing state property
+        /// Used for TestValidState(string state, bool expected)
         /// </summary>
-        public static readonly ImmutableList<object[]> AddressTestCases = ImmutableList.Create
+        public static readonly ImmutableList<object[]> StateTestCases = ImmutableList.Create
         (
-            new object[]{ null, false },
-            new object[]{ new Batch.Library.Models.Address(), true },
-            new object[]{ new Batch.Library.Models.Address() { Country = "US" }, true },
-            new object[]{ new Batch.Library.Models.Address() { Address1 = "Test Street" }, true }
+            new object[] { "", false },
+            new object[] { "testestest", false },
+            new object[] { "       ", false },
+            new object[] { 12345.ToString(), false },
+            new object[] { string.Empty, false },
+            new object[] { null, false },
+            new object[] { "FL", true },
+            new object[] { "NY", true },
+            new object[] { "IA", true },
+            new object[] { "fl", true },
+            new object[] { "ky", true },
+            new object[] { 12.ToString(), false },
+            new object[] { "AA", false },
+            new object[] { "A1", false },
+            new object[] { "99", false }
         );
 
         /// <summary>
-        /// Test for valid address
+        /// Test for valid state
         /// </summary>
-        /// <param name="address">address model</param>
+        /// <param name="state">state code</param>
         /// <param name="expected">expected bool value</param>
         [Theory]
-        [MemberData(nameof(AddressTestCases))]
-        public void TestValidAddress(Batch.Library.Models.Address address, bool expected)
+        [MemberData(nameof(StateTestCases))]
+        public void TestValidState(string stateCode, bool expected)
         {
             Batch.Library.Models.Batch batchTemp = batch;
-            batchTemp.Address = address;
+            batchTemp.State = stateCode;
             Assert.Equal(batchTemp.Validate(), expected);
         }
 
