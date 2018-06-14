@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ServiceHub.Batch.Context\ServiceHub.Batch.Context.csproj" />
     <ProjectReference Include="..\ServiceHub.Batch.Library\ServiceHub.Batch.Library.csproj" />
   </ItemGroup>
 
