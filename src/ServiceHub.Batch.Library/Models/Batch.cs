@@ -8,7 +8,7 @@ namespace ServiceHub.Batch.Library.Models
     /// <summary>
     /// Batch Model
     /// Contains all information describing any one batch.
-    /// </ssebummary>
+    /// </summary>
     /// <remarks>
     /// A batch refers to a training period for Revature associates. Model includes following information:
     /// unique batch id, start/end date, technology stack, location, number of associates and list of associates.
