@@ -20,7 +20,6 @@ namespace ServiceHub.Batch.Context.Utilities
         /// <summary>
         /// Gets a list of all of the batches that match the specified city and state
         /// </summary>
-        /// <param name="city">City</param>
         /// <param name="state">State</param>
         /// <returns></returns>
         List<Library.Models.Batch> GetBatchesByLocation(string state);

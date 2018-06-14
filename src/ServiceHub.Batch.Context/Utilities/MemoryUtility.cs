@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ServiceHub.Batch.Context.Utilities
 {
-    class MemoryUtility : IUtility
+    public class MemoryUtility : IUtility
     {
         /// <value>Create the memList List for use with CRUD functions</value>
         private List<Library.Models.Batch> memList = new List<Library.Models.Batch>();
@@ -61,7 +61,7 @@ namespace ServiceHub.Batch.Context.Utilities
         /// <returns></returns>
         public List<Library.Models.Batch> GetBatchesByLocation(string state)
         {
-            return memList.FindAll(x => x.Address.State == state);
+            return memList.FindAll(x => x.State == state);
         }
     }
 }
