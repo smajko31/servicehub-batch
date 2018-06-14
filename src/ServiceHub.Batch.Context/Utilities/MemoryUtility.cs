@@ -9,15 +9,7 @@ namespace ServiceHub.Batch.Context.Utilities
     {
         /// <value>Create the memList List for use with CRUD functions</value>
         private List<Library.Models.Batch> memList = new List<Library.Models.Batch>();
-        /// <summary>
-        /// Gets a batch from the list matching the Batch ID 
-        /// </summary>
-        /// <param name="id">Batch Id</param>
-        /// <returns>A single batch based on the given id parameter</returns>
-        public Library.Models.Batch GetBatchById(Guid id)
-        {
-            return memList.Find(x => x.BatchId == id);
-        }
+        
         /// <summary>
         /// Gets all the batches from the list
         /// </summary>
@@ -67,9 +59,9 @@ namespace ServiceHub.Batch.Context.Utilities
         /// <param name="city">City</param>
         /// <param name="state">State</param>
         /// <returns></returns>
-        public List<Library.Models.Batch> GetBatchesByLocation(string city, string state)
+        public List<Library.Models.Batch> GetBatchesByLocation(string state)
         {
-            return memList.FindAll(x => x.Address.City == city && x.Address.State == state);
+            return memList.FindAll(x => x.Address.State == state);
         }
     }
 }
