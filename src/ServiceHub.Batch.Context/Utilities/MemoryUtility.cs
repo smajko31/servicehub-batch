@@ -1,22 +1,21 @@
-﻿using System;
+﻿using ServiceHub.Batch.Library;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ServiceHub.Batch.Context.Utilities
 {
     public class MemoryUtility : IUtility
     {
         /// <value>Create the memList List for use with CRUD functions</value>
-        private List<Library.Models.Batch> memList = new List<Library.Models.Batch>();
-        
+        private static List<Models.Batch> memList = new List<Models.Batch>();
+
         /// <summary>
         /// Gets all the batches from the list
         /// </summary>
         /// <returns>A list of all of the batches</returns>
         public List<Library.Models.Batch> GetAllBatches()
         {
-            return memList;
+            return ModelMapper.ToLibraryList(memList);
         }
         /// <summary>
         /// Adds a batch to the batch list
@@ -24,7 +23,7 @@ namespace ServiceHub.Batch.Context.Utilities
         /// <param name="batch">Batch object</param>
         public void AddBatch(Library.Models.Batch batch)
         {
-            memList.Add(batch);
+            memList.Add(ModelMapper.ToContextBatchModel(batch));
         }
         /// <summary>
         /// Modifies the specified batch in the list with new information
@@ -32,9 +31,9 @@ namespace ServiceHub.Batch.Context.Utilities
         /// <param name="batch">Batch object</param>
         public void UpdateBatch(Library.Models.Batch batch)
         {
-            int index = memList.IndexOf(batch);
+            int index = memList.FindIndex(b => b.BatchId == batch.BatchId);
             if (index >= 0)
-                memList[index] = batch;
+                memList[index] = ModelMapper.ToContextBatchModel(batch);
         }
         /// <summary>
         /// Deletes a batch from the list
@@ -51,7 +50,7 @@ namespace ServiceHub.Batch.Context.Utilities
         /// <returns>List of batches with the same skill</returns>
         public List<Library.Models.Batch> GetBatchesBySkill(string skill)
         {
-            return memList.FindAll(x => x.BatchSkill == skill);
+            return ModelMapper.ToLibraryList(memList.FindAll(x => x.BatchSkill == skill));
         }
         /// <summary>
         /// Gets a list of all of the batches that match the specified city and state
@@ -61,7 +60,7 @@ namespace ServiceHub.Batch.Context.Utilities
         /// <returns></returns>
         public List<Library.Models.Batch> GetBatchesByLocation(string state)
         {
-            return memList.FindAll(x => x.State == state);
+            return ModelMapper.ToLibraryList(memList.FindAll(x => x.State == state));
         }
     }
 }
