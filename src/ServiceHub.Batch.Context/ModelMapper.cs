@@ -38,6 +38,7 @@ namespace ServiceHub.Batch.Library
             batchLibrary.BatchOccupancy = batchContext.BatchOccupancy;
             batchLibrary.BatchSkill = batchContext.BatchSkill;
             batchLibrary.UserIds = batchContext.UserIds;
+            batchLibrary.State = batchContext.State;
 
             if (!batchLibrary.Validate()) { return null; }
             return batchLibrary;
@@ -60,6 +61,7 @@ namespace ServiceHub.Batch.Library
             batchContext.BatchOccupancy = batchLibrary.BatchOccupancy;
             batchContext.BatchSkill = batchLibrary.BatchSkill;
             batchContext.UserIds = batchLibrary.UserIds;
+            batchContext.State = batchLibrary.State;
 
             return batchContext;
         }
