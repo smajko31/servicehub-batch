@@ -81,7 +81,7 @@ namespace ServiceHub.Batch.Testing.Service
         [InlineData("Java")]
         void GetBySkillTest(String skill)
         {
-            Batch.Service.Controllers.BatchController controller = new Batch.Service.Controllers.BatchController(loggerFactory);
+            Batch.Service.Controllers.BatchController controller = new Batch.Service.Controllers.BatchController(new MemoryUtility(), loggerFactory);
 
             List<Batch.Library.Models.Batch> newBatch = new List<Batch.Library.Models.Batch>();
             controller.storage.AddBatch(testBatch1);
@@ -111,7 +111,7 @@ namespace ServiceHub.Batch.Testing.Service
         [Fact]
         void GetByLocationTest()
         {
-            Batch.Service.Controllers.BatchController controller = new Batch.Service.Controllers.BatchController(loggerFactory);
+            Batch.Service.Controllers.BatchController controller = new Batch.Service.Controllers.BatchController(new MemoryUtility(), loggerFactory);
 
             List<Batch.Library.Models.Batch> newBatch = new List<Batch.Library.Models.Batch>();
             controller.storage.AddBatch(testBatch1);

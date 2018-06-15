@@ -14,6 +14,7 @@ namespace ServiceHub.Batch.Service
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            Seed();
         }
 
         public static void Seed()
@@ -128,6 +129,7 @@ namespace ServiceHub.Batch.Service
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<IUtility, MemoryUtility>();
             services.AddMvc();
         }
 
@@ -140,7 +142,6 @@ namespace ServiceHub.Batch.Service
             {
                 app.UseDeveloperExceptionPage();
             }
-
             app.UseMvc();
         }
     }

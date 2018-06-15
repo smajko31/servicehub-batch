@@ -10,18 +10,12 @@ namespace ServiceHub.Batch.Service.Controllers
     public class BatchController : BaseController
     {
         /// <summary>
-        /// Default
+        /// Repository
         /// </summary>
-        public Storage storage = new Storage(new MemoryUtility());
+        public Storage storage;
 
         /// <summary>
-        /// Constructor that uses default storage
-        /// </summary>
-        /// <param name="loggerFactory"></param>
-        public BatchController(ILoggerFactory loggerFactory) : base(loggerFactory) { }
-
-        /// <summary>
-        /// Overload constructor to dependency inject another repo
+        /// Overload constructor to dependency inject repository class
         /// </summary>
         /// <param name="loggerFactory"></param>
         public BatchController(IUtility util, ILoggerFactory loggerFactory) : base(loggerFactory)
