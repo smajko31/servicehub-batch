@@ -10,15 +10,24 @@ namespace ServiceHub.Batch.Service.Controllers
     public class BatchController : BaseController
     {
         /// <summary>
-        /// Constructor
+        /// Default
+        /// </summary>
+        public Storage storage = new Storage(new MemoryUtility());
+
+        /// <summary>
+        /// Constructor that uses default storage
         /// </summary>
         /// <param name="loggerFactory"></param>
         public BatchController(ILoggerFactory loggerFactory) : base(loggerFactory) { }
 
         /// <summary>
-        /// Temporary storage
+        /// Overload constructor to dependency inject another repo
         /// </summary>
-        public MemoryUtility utility = new MemoryUtility();
+        /// <param name="loggerFactory"></param>
+        public BatchController(IUtility util, ILoggerFactory loggerFactory) : base(loggerFactory)
+        {
+            storage = new Storage(util);
+        }
 
         /// <summary>
         /// Get all batches from database
@@ -30,7 +39,7 @@ namespace ServiceHub.Batch.Service.Controllers
         [Route("api/Batches")]
         public async Task<IActionResult> Get()
         {
-            var myTask = Task.Run(() => utility.GetAllBatches());
+            var myTask = Task.Run(() => storage.GetAllBatches());
             List<Library.Models.Batch> result = await myTask;
 
             return Ok(result);
@@ -47,7 +56,7 @@ namespace ServiceHub.Batch.Service.Controllers
         [Route("api/Batches/skill")]
         public async Task<IActionResult> GetBySkill([FromBody] string skill)
         {
-            var myTask = Task.Run(() => utility.GetBatchesBySkill(skill));
+            var myTask = Task.Run(() => storage.GetBatchesBySkill(skill));
             List<Library.Models.Batch> result = await myTask;
             return Ok(result);
         }
@@ -63,7 +72,7 @@ namespace ServiceHub.Batch.Service.Controllers
         [Route("api/Batches/location")]
         public async Task<IActionResult> GetByLocation([FromBody] string state)
         {
-            var myTask = Task.Run(() => utility.GetBatchesByLocation(state));
+            var myTask = Task.Run(() => storage.GetBatchesByLocation(state));
             List<Library.Models.Batch> result = await myTask;
             return Ok(result);
         }

@@ -3,6 +3,7 @@ using Xunit;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using ServiceHub.Batch.Context.Utilities;
 
 namespace ServiceHub.Batch.Testing.Service
 {
@@ -52,13 +53,13 @@ namespace ServiceHub.Batch.Testing.Service
         [Fact]
         public void GetAllTest()
         {
-            Batch.Service.Controllers.BatchController controller = new Batch.Service.Controllers.BatchController(loggerFactory);
+            Batch.Service.Controllers.BatchController controller = new Batch.Service.Controllers.BatchController(new MemoryUtility(), loggerFactory);
 
             List<Batch.Library.Models.Batch> newBatch = new List<Batch.Library.Models.Batch>();
-            controller.utility.AddBatch(testBatch1);
-            controller.utility.AddBatch(testBatch2);
-            controller.utility.AddBatch(testBatch3);
-            newBatch = controller.utility.GetAllBatches();
+            controller.storage.AddBatch(testBatch1);
+            controller.storage.AddBatch(testBatch2);
+            controller.storage.AddBatch(testBatch3);
+            newBatch = controller.storage.GetAllBatches();
 
             List<Batch.Library.Models.Batch> newBatch2 = new List<Batch.Library.Models.Batch>();
             var actionResultTask = controller.Get();
@@ -83,9 +84,9 @@ namespace ServiceHub.Batch.Testing.Service
             Batch.Service.Controllers.BatchController controller = new Batch.Service.Controllers.BatchController(loggerFactory);
 
             List<Batch.Library.Models.Batch> newBatch = new List<Batch.Library.Models.Batch>();
-            controller.utility.AddBatch(testBatch1);
-            controller.utility.AddBatch(testBatch2);
-            controller.utility.AddBatch(testBatch3);
+            controller.storage.AddBatch(testBatch1);
+            controller.storage.AddBatch(testBatch2);
+            controller.storage.AddBatch(testBatch3);
 
             List<Batch.Library.Models.Batch> testC = new List<Batch.Library.Models.Batch>();
             var batchSkill = controller.GetBySkill(skill);
@@ -113,9 +114,9 @@ namespace ServiceHub.Batch.Testing.Service
             Batch.Service.Controllers.BatchController controller = new Batch.Service.Controllers.BatchController(loggerFactory);
 
             List<Batch.Library.Models.Batch> newBatch = new List<Batch.Library.Models.Batch>();
-            controller.utility.AddBatch(testBatch1);
-            controller.utility.AddBatch(testBatch2);
-            controller.utility.AddBatch(testBatch3);
+            controller.storage.AddBatch(testBatch1);
+            controller.storage.AddBatch(testBatch2);
+            controller.storage.AddBatch(testBatch3);
 
             List<Batch.Library.Models.Batch> testL = new List<Batch.Library.Models.Batch>();
             var batchLocation = controller.GetByLocation("MA");
