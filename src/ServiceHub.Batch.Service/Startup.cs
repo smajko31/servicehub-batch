@@ -6,20 +6,54 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ServiceHub.Batch.Context.Utilities;
+using MongoDB.Driver;
 
 namespace ServiceHub.Batch.Service
 {
     public class Startup
     {
+        public IConfiguration _configuration { get; }
+
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            _configuration = configuration;
             Seed();
+        }
+
+        public void ConfigureServices(IServiceCollection services)
+        {
+            const string connectionString = @"mongodb://db";
+
+            services.AddTransient<IUtility, BatchRepository>();
+
+            services.AddMvc();
+
+            services.AddSingleton(
+                mc => new MongoClient(connectionString)
+                .GetDatabase("batchdb")
+                .GetCollection<Context.Models.Batch>("batches")
+            );
+        }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        {
+            loggerFactory.AddApplicationInsights(app.ApplicationServices);
+
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            app.UseMvc();
         }
 
         public static void Seed()
         {
-            Storage storage = new Storage(new MemoryUtility());
+            Storage storage = new Storage(new BatchRepository(
+                new MongoClient(@"mongodb://db")
+                .GetDatabase("batchdb")
+                .GetCollection<Context.Models.Batch>("batches")));
+
             try
             {
                 storage.AddBatch(
@@ -123,26 +157,6 @@ namespace ServiceHub.Batch.Service
                     });
             }
             catch { throw; }
-        }
-
-        public IConfiguration Configuration { get; }
-
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddTransient<IUtility, MemoryUtility>();
-            services.AddMvc();
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
-        {
-            loggerFactory.AddApplicationInsights(app.ApplicationServices);
-
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            app.UseMvc();
         }
     }
 }
