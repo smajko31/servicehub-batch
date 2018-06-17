@@ -3,17 +3,18 @@ using ServiceHub.Batch.Context.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 public static class SeedData
 {
     public static void Initialize(IServiceProvider serviceProvider)
     {
         var context = serviceProvider.GetRequiredService<BatchRepository>();
-        if (context.GetAllBatches() == null || !context.GetAllBatches().Any())
+        if (context.GetAllBatches() == null || !context.GetAllBatches().Result.Any())
         {
             try
             {
-                context.AddBatch(
+                Task.Run(() => context.AddBatch(
                     new ServiceHub.Batch.Library.Models.Batch()
                     {
                         BatchId = Guid.NewGuid(),
@@ -46,8 +47,9 @@ public static class SeedData
                         new Guid("822c472b-4ded-4a8f-ad8a-ffd7cede1b76"),
                         new Guid("2c3399ab-29a2-4c9b-98c0-7fb60d1400d9")
                         }
-                    });
-                context.AddBatch(
+                    }));
+
+                Task.Run(() => context.AddBatch(
                 new ServiceHub.Batch.Library.Models.Batch()
                 {
                     BatchId = Guid.NewGuid(),
@@ -81,8 +83,8 @@ public static class SeedData
                         new Guid("16eed2f4-627e-46a9-ba8d-684886decbfd"),
                         new Guid("522d473b-2294-4151-9b81-885cbcef8d82")
                         }
-                });
-                context.AddBatch(
+                }));
+                Task.Run(() => context.AddBatch(
                     new ServiceHub.Batch.Library.Models.Batch()
                     {
                         BatchId = Guid.NewGuid(),
@@ -111,7 +113,7 @@ public static class SeedData
                         new Guid("38954181-fe8c-4c72-be41-2324fd59530d"),
                         new Guid("67bb921c-b537-4b2c-833c-f219be6e5882")
                         }
-                    });
+                    }));
             }
             catch { throw; }
         }

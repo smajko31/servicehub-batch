@@ -71,9 +71,9 @@ namespace ServiceHub.Batch.Testing.Service
                 }
 
             };
-            controller.storage.AddBatch(testBatch1);
-            controller.storage.AddBatch(testBatch2);
-            controller.storage.AddBatch(testBatch3);
+            controller.storage.AddBatch(testBatch1).Wait();
+            controller.storage.AddBatch(testBatch2).Wait();
+            controller.storage.AddBatch(testBatch3).Wait();
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace ServiceHub.Batch.Testing.Service
         public void GetAllTest()
         {
             List<Batch.Library.Models.Batch> newBatch = new List<Batch.Library.Models.Batch>();
-            newBatch = controller.storage.GetAllBatches();
+            newBatch = controller.storage.GetAllBatches().Result;
 
             List<Batch.Library.Models.Batch> newBatch2 = new List<Batch.Library.Models.Batch>();
             var actionResultTask = controller.Get();
@@ -140,9 +140,9 @@ namespace ServiceHub.Batch.Testing.Service
 
         public void Dispose()
         {
-            controller.storage.DeleteBatch(testBatch1.BatchId);
-            controller.storage.DeleteBatch(testBatch2.BatchId);
-            controller.storage.DeleteBatch(testBatch3.BatchId);
+            controller.storage.DeleteBatch(testBatch1.BatchId).Wait();
+            controller.storage.DeleteBatch(testBatch2.BatchId).Wait();
+            controller.storage.DeleteBatch(testBatch3.BatchId).Wait();
         }
     }
 }
