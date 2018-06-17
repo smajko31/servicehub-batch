@@ -12,14 +12,16 @@ namespace ServiceHub.Batch.Testing
     public class MemoryUtilityTest
     {
         /// <value>Use storage as an IoC container</summary>
-        Storage storage = new Storage(new MemoryUtility());
-        static ILoggerFactory loggerFactory = new LoggerFactory();
+        Storage storage;
+        static ILoggerFactory loggerFactory;
         Batch.Library.Models.Batch testBatch1;
         Batch.Library.Models.Batch testBatch2;
         Batch.Library.Models.Batch testBatch3;
 
         public MemoryUtilityTest()
         {
+            storage = new Storage(new MemoryUtility());
+            loggerFactory = new LoggerFactory();
             testBatch1 = new Batch.Library.Models.Batch()
             {
                 BatchId = Guid.NewGuid(),
@@ -120,7 +122,17 @@ namespace ServiceHub.Batch.Testing
             storage.AddBatch(testBatch2);
             storage.AddBatch(testBatch3);*/
         }
-
+        
+        /// <summary>
+        /// Test that a list of all of the batches gets returned
+        /// </summary>
+        [Fact]
+        void GetAllBatchesTest()
+        {
+            storage.AddBatch(testBatch2);
+            List<Batch.Library.Models.Batch> batchList = storage.GetAllBatches();
+            Assert.NotNull(batchList);
+        }
         /// <summary>
         /// Test that a new batch can be added to the batchlist
         /// </summary>
@@ -133,15 +145,7 @@ namespace ServiceHub.Batch.Testing
             Assert.NotNull(compareBatch);
             //Assert.False(initialListSize == addBatchSize);
         }
-        /// <summary>
-        /// Test that a list of all of the batches gets returned
-        /// </summary>
-        [Fact]
-        void GetAllBatchesTest()
-        {
-            List<Batch.Library.Models.Batch> batchList = storage.GetAllBatches();
-            Assert.NotNull(batchList);
-        }
+        
         /// <summary>
         /// Test that a value inside of a specific batch gets changed inside of the list
         /// of batches
