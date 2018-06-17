@@ -9,19 +9,16 @@ using Microsoft.Extensions.Logging;
 
 namespace ServiceHub.Batch.Testing
 {
-    public class MemoryUtilityTest
+    public class MemoryUtilityTest : IDisposable
     {
         /// <value>Use storage as an IoC container</summary>
         Storage storage;
-        static ILoggerFactory loggerFactory;
         Batch.Library.Models.Batch testBatch1;
         Batch.Library.Models.Batch testBatch2;
         Batch.Library.Models.Batch testBatch3;
 
         public MemoryUtilityTest()
         {
-            storage = new Storage(new MemoryUtility());
-            loggerFactory = new LoggerFactory();
             testBatch1 = new Batch.Library.Models.Batch()
             {
                 BatchId = Guid.NewGuid(),
@@ -118,18 +115,23 @@ namespace ServiceHub.Batch.Testing
                         new Guid("67bb921c-b537-4b2c-833c-f219be6e5882")
                         }
             };
-            /*storage.AddBatch(testBatch1);
+            storage = new Storage(new MemoryUtility());
+            storage.AddBatch(testBatch1);
             storage.AddBatch(testBatch2);
-            storage.AddBatch(testBatch3);*/
         }
-        
+        public void Dispose()
+        {
+            storage.DeleteBatch(testBatch1.BatchId);
+            storage.DeleteBatch(testBatch2.BatchId);
+            storage.DeleteBatch(testBatch3.BatchId);
+        }
         /// <summary>
         /// Test that a list of all of the batches gets returned
         /// </summary>
         [Fact]
         void GetAllBatchesTest()
         {
-            storage.AddBatch(testBatch2);
+            storage.AddBatch(testBatch3);
             List<Batch.Library.Models.Batch> batchList = storage.GetAllBatches();
             Assert.NotNull(batchList);
         }
@@ -139,9 +141,8 @@ namespace ServiceHub.Batch.Testing
         [Fact]
         void AddBatchTest()
         {
-            Batch.Library.Models.Batch testBatch = testBatch1;
-            storage.AddBatch(testBatch);
-            Batch.Library.Models.Batch compareBatch = storage.GetAllBatches().Find(x => x.BatchId == testBatch.BatchId);
+            storage.AddBatch(testBatch3);
+            Batch.Library.Models.Batch compareBatch = storage.GetAllBatches().Find(x => x.BatchId == testBatch3.BatchId);
             Assert.NotNull(compareBatch);
             //Assert.False(initialListSize == addBatchSize);
         }
@@ -153,15 +154,14 @@ namespace ServiceHub.Batch.Testing
         [Fact]
         void UpdateBatchTest()
         {
-            Batch.Library.Models.Batch newBatchItem = new Batch.Library.Models.Batch();
-            string newSkill = "Java";
-            int JavaSize = storage.GetBatchesBySkill(newSkill).Count;
-            newBatchItem.BatchSkill = "C#";
-            storage.AddBatch(newBatchItem);
-            newBatchItem.BatchSkill = newSkill;
-            storage.UpdateBatch(newBatchItem);
-            int PostJavaSize = storage.GetBatchesBySkill(newSkill).Count;
-            Assert.False(JavaSize == PostJavaSize);
+            storage.AddBatch(testBatch3);
+            string newSkill = ".NET";
+            Batch.Library.Models.Batch replacebatch = storage.GetAllBatches().Find(x => x.BatchSkill == "Dynamics");
+            int NETSize = storage.GetBatchesBySkill(newSkill).Count;
+            replacebatch.BatchSkill = newSkill;
+            storage.UpdateBatch(replacebatch);
+            int PostNETSize = storage.GetBatchesBySkill(newSkill).Count;
+            Assert.False(NETSize == PostNETSize);
         }
         /// <summary>
         /// Test that a batch gets deleted from the batch list
@@ -169,10 +169,9 @@ namespace ServiceHub.Batch.Testing
         [Fact]
         void DeleteBatchTest()
         {
-            Batch.Library.Models.Batch newBatchItem = new Batch.Library.Models.Batch();
-            storage.AddBatch(newBatchItem);
+            storage.AddBatch(testBatch3);
             int size = storage.GetAllBatches().Count;
-            storage.DeleteBatch(newBatchItem.BatchId);
+            storage.DeleteBatch(testBatch3.BatchId);
             int sizeAfterDelete = storage.GetAllBatches().Count;
             Assert.False(sizeAfterDelete == size);
         }
@@ -182,20 +181,13 @@ namespace ServiceHub.Batch.Testing
         /// <param name="skill">Batch skill</param>
         /// <param name="expected">Number of results expected to return</param>
         [Theory]
-        [InlineData("Java", 2)]
-        [InlineData("C#", 1)]
+        [InlineData("Java", 1)]
+        [InlineData(".NET", 1)]
+        [InlineData("Dynamics",1)]
         void GetBatchesBySkillTest(string skill, int expected)
         {
+            storage.AddBatch(testBatch3);
             List<Batch.Library.Models.Batch> collection = new List<Batch.Library.Models.Batch>();
-            Batch.Library.Models.Batch sampleBatch1 = new Batch.Library.Models.Batch();
-            Batch.Library.Models.Batch sampleBatch2 = new Batch.Library.Models.Batch();
-            Batch.Library.Models.Batch sampleBatch3 = new Batch.Library.Models.Batch();
-            sampleBatch1.BatchSkill = "Java";
-            sampleBatch2.BatchSkill = "C#";
-            sampleBatch3.BatchSkill = "Java";
-            storage.AddBatch(sampleBatch1);
-            storage.AddBatch(sampleBatch2);
-            storage.AddBatch(sampleBatch3);
             collection = storage.GetBatchesBySkill(skill);
             Assert.Equal(expected, collection.Count);
         }
@@ -207,22 +199,13 @@ namespace ServiceHub.Batch.Testing
         /// <param name="state">State</param>
         /// <param name="expected">Expected number of results to return</param>
         [Theory]
-        [InlineData("FL", 2)]
-        [InlineData("NY", 1)]
+        [InlineData("FL", 1)]
+        [InlineData("NY", 0)]
+        [InlineData("VA", 2)]
         void GetBatchesByLocationTest(string state, int expected)
         {
-            string state1 = "FL";
-            string state2 = "NY";
+            storage.AddBatch(testBatch3);
             List<Batch.Library.Models.Batch> collection = new List<Batch.Library.Models.Batch>();
-            Batch.Library.Models.Batch sampleBatch1 = new Batch.Library.Models.Batch();
-            Batch.Library.Models.Batch sampleBatch2 = new Batch.Library.Models.Batch();
-            Batch.Library.Models.Batch sampleBatch3 = new Batch.Library.Models.Batch();
-            sampleBatch1.State = state1;
-            sampleBatch2.State = state2;
-            sampleBatch3.State = state1;
-            storage.AddBatch(sampleBatch1);
-            storage.AddBatch(sampleBatch2);
-            storage.AddBatch(sampleBatch3);
             collection = storage.GetBatchesByLocation(state);
             Assert.Equal(expected, collection.Count);
         }
