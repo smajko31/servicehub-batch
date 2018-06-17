@@ -11,10 +11,13 @@ namespace ServiceHub.Batch.Context.Utilities
     public class BatchRepository : IUtility
     {
         private readonly IMongoCollection<Context.Models.Batch> _batches;
+        const string connectionString = @"mongodb://db";
 
-        public BatchRepository(IMongoCollection<Context.Models.Batch> batches)
+        public BatchRepository()
         {
-            _batches = batches;
+            _batches = new MongoClient(connectionString)
+                .GetDatabase("batchdb")
+                .GetCollection<Context.Models.Batch>("batches");
         }
 
         /// <summary>
@@ -57,7 +60,7 @@ namespace ServiceHub.Batch.Context.Utilities
                 throw new ArgumentNullException(nameof(_batches));
             }
 
-            return ModelMapper.ToLibraryList(_batches.Find(new BsonDocument()).ToList());
+            return ModelMapper.ToLibraryList(_batches.AsQueryable().ToList());
         }
 
         /// <summary>

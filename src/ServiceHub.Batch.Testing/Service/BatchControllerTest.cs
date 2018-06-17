@@ -6,6 +6,8 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Immutable;
 using ServiceHub.Batch.Context.Utilities;
 
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
+
 namespace ServiceHub.Batch.Testing.Service
 {
     public class BatchControllerTest : IDisposable
