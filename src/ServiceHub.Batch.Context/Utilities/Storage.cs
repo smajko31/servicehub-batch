@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ServiceHub.Batch.Context.Utilities
 {
@@ -23,35 +24,35 @@ namespace ServiceHub.Batch.Context.Utilities
         }
 
         /// <value> Get all batches from injected IUtility class repo </value>
-        public List<Library.Models.Batch> GetAllBatches()
+        public async Task<List<Library.Models.Batch>> GetAllBatches()
         {
-            return utility.GetAllBatches();
+            return await utility.GetAllBatches();
         }
 
         /// <value> Add batch to injected IUtility class repo </value>
-        public void AddBatch(Library.Models.Batch batch)
+        public async Task AddBatch(Library.Models.Batch batch)
         {
-            utility.AddBatch(batch);
+            await utility.AddBatch(batch);
         }
 
         /// <value> Update batch in injected IUtility class repo </value>
-        public void UpdateBatch(Library.Models.Batch batch)
+        public async Task UpdateBatch(Library.Models.Batch batch)
         {
-            utility.UpdateBatch(batch);
+            await utility.UpdateBatch(batch);
         }
 
         /// <value> Delete batch from injected IUtility class repo </value>
-        public void DeleteBatch(Guid id)
+        public async Task DeleteBatch(Guid id)
         {
-            utility.DeleteBatch(id);
+            await utility.DeleteBatch(id);
         }
-        public List<Library.Models.Batch> GetBatchesBySkill(string skill)
+        public async Task<List<Library.Models.Batch>> GetBatchesBySkill(string skill)
         {
-            return utility.GetBatchesBySkill(skill);
+            return await utility.GetBatchesBySkill(skill);
         }
-        public List<Library.Models.Batch> GetBatchesByLocation(string state)
+        public async Task<List<Library.Models.Batch>> GetBatchesByLocation(string state)
         {
-            return utility.GetBatchesByLocation(state);
+            return await utility.GetBatchesByLocation(state);
         }
     }
 }

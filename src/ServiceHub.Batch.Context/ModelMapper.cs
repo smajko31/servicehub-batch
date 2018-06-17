@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ServiceHub.Batch.Library
 {
@@ -51,6 +52,7 @@ namespace ServiceHub.Batch.Library
         /// <returns>Batch context model</returns>
         public static Context.Models.Batch ToContextBatchModel(Models.Batch batchLibrary)
         {
+            
             if (!batchLibrary.Validate()) { return null; }
 
             Context.Models.Batch batchContext = new Context.Models.Batch();
