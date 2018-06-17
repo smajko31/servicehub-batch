@@ -8,7 +8,7 @@ using ServiceHub.Batch.Context.Utilities;
 
 namespace ServiceHub.Batch.Testing.Service
 {
-    public class BatchControllerTest
+    public class BatchControllerTest : IDisposable
     {
         /// <summary>
         /// Initialize dummy data Address and Batch models
@@ -26,7 +26,7 @@ namespace ServiceHub.Batch.Testing.Service
         /// 
         public BatchControllerTest()
         {
-            testBatch1 = new Batch.Library.Models.Batch()
+             testBatch1 = new Batch.Library.Models.Batch()
             {
 
                 BatchId = Guid.NewGuid(),
@@ -89,8 +89,8 @@ namespace ServiceHub.Batch.Testing.Service
             var res = actionResultTask.Result as OkObjectResult;
             var result = res.Value;
             newBatch2 = (List<Batch.Library.Models.Batch>)result;
-
             Assert.Equal(newBatch.Count, newBatch2.Count);
+
         }
 
         /// <summary>
@@ -117,7 +117,6 @@ namespace ServiceHub.Batch.Testing.Service
             testC = (List<Batch.Library.Models.Batch>)result;
 
             Assert.Equal(num, testC.FindAll(x => x.BatchSkill == skill).Count);
-
         }
 
         /// <summary>
@@ -135,6 +134,13 @@ namespace ServiceHub.Batch.Testing.Service
             testL = (List<Batch.Library.Models.Batch>)result;
 
             Assert.Equal(2, testL.Count);
+        }
+
+        public void Dispose()
+        {
+            controller.storage.DeleteBatch(testBatch1.BatchId);
+            controller.storage.DeleteBatch(testBatch2.BatchId);
+            controller.storage.DeleteBatch(testBatch3.BatchId);
         }
     }
 }
