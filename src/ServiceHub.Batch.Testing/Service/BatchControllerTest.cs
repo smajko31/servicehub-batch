@@ -3,6 +3,7 @@ using Xunit;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Collections.Immutable;
 using ServiceHub.Batch.Context.Utilities;
 
 namespace ServiceHub.Batch.Testing.Service
@@ -17,34 +18,60 @@ namespace ServiceHub.Batch.Testing.Service
         Batch.Library.Models.Batch testBatch3;
 
         static ILoggerFactory loggerFactory = new LoggerFactory();
+        Batch.Service.Controllers.BatchController controller = new Batch.Service.Controllers.BatchController(new MemoryUtility(), loggerFactory);
 
         /// <summary>
         /// Instantiate dummy Address and Batch models
         /// </summary>
+        /// 
         public BatchControllerTest()
         {
             testBatch1 = new Batch.Library.Models.Batch()
             {
 
                 BatchId = Guid.NewGuid(),
-                BatchSkill = "C#",
-                State = "MA"
+                BatchName = "1703-dec09-java",
+                BatchOccupancy = 17,
+                BatchSkill = "Test2",
+                StartDate = new DateTime(2017, 12, 9),
+                EndDate = new DateTime(2018, 2, 23),
+                State = "AK",
+                UserIds = new List<Guid> {
+                        new Guid("e33ab8fd-b784-412d-8408-0d7fa5d910be")
+                }
 
             };
             testBatch2 = new Batch.Library.Models.Batch()
             {
                 BatchId = Guid.NewGuid(),
-                BatchSkill = "Java",
-                State = "IL"
+                BatchName = "1804-apr09-net",
+                BatchOccupancy = 21,
+                BatchSkill = "Test1",
+                StartDate = new DateTime(2018, 4, 9),
+                EndDate = new DateTime(2018, 6, 22),
+                State = "HI",
+                UserIds = new List<Guid> {
+                        new Guid("a043c475-a8ea-4421-bb6e-ee94289c67e5")
+                }
 
             };
             testBatch3 = new Batch.Library.Models.Batch()
             {
                 BatchId = Guid.NewGuid(),
-                BatchSkill = "C#",
-                State = "MA"
+                BatchName = "1803-mar26-dynamics",
+                BatchOccupancy = 22,
+                BatchSkill = "Test2",
+                StartDate = new DateTime(2018, 3, 26),
+                EndDate = new DateTime(2018, 6, 4),
+                State = "AK",
+                UserIds = new List<Guid> {
+                        new Guid("b165e54e-30e3-4f5c-8f94-83e55d8acb3b")
+                }
 
             };
+            controller.storage.AddBatch(testBatch1);
+            controller.storage.AddBatch(testBatch2);
+            controller.storage.AddBatch(testBatch3);
         }
 
         /// <summary>
@@ -53,12 +80,7 @@ namespace ServiceHub.Batch.Testing.Service
         [Fact]
         public void GetAllTest()
         {
-            Batch.Service.Controllers.BatchController controller = new Batch.Service.Controllers.BatchController(new MemoryUtility(), loggerFactory);
-
             List<Batch.Library.Models.Batch> newBatch = new List<Batch.Library.Models.Batch>();
-            controller.storage.AddBatch(testBatch1);
-            controller.storage.AddBatch(testBatch2);
-            controller.storage.AddBatch(testBatch3);
             newBatch = controller.storage.GetAllBatches();
 
             List<Batch.Library.Models.Batch> newBatch2 = new List<Batch.Library.Models.Batch>();
@@ -66,28 +88,27 @@ namespace ServiceHub.Batch.Testing.Service
             actionResultTask.Wait();
             var res = actionResultTask.Result as OkObjectResult;
             var result = res.Value;
-
             newBatch2 = (List<Batch.Library.Models.Batch>)result;
 
             Assert.Equal(newBatch.Count, newBatch2.Count);
         }
 
         /// <summary>
-        /// Compare expected return with actual return from GetBySkill(String skill)
+        /// Create object for test GetBySkill
         /// </summary>
-        /// <param name="skill">Test "C#" input and "Java" input</param>
+        public static readonly ImmutableList<object[]> SkillTestCases = ImmutableList.Create
+        (
+            new object[] { "Test1", 1 },
+            new object[] { "Test2", 2 }
+        );
+        /// <summary>
+        /// Compare expected return with actual return from GetBySkill(string skill)
+        /// </summary>
+        /// <param name="skill">Test "Test1" input and "Test2" input</param>
         [Theory]
-        [InlineData("C#")]
-        [InlineData("Java")]
-        void GetBySkillTest(String skill)
+        [MemberData(nameof(SkillTestCases))]
+        void GetBySkillTest(string skill, int num)
         {
-            Batch.Service.Controllers.BatchController controller = new Batch.Service.Controllers.BatchController(new MemoryUtility(), loggerFactory);
-
-            List<Batch.Library.Models.Batch> newBatch = new List<Batch.Library.Models.Batch>();
-            controller.storage.AddBatch(testBatch1);
-            controller.storage.AddBatch(testBatch2);
-            controller.storage.AddBatch(testBatch3);
-
             List<Batch.Library.Models.Batch> testC = new List<Batch.Library.Models.Batch>();
             var batchSkill = controller.GetBySkill(skill);
             batchSkill.Wait();
@@ -95,31 +116,19 @@ namespace ServiceHub.Batch.Testing.Service
             var result = res.Value;
             testC = (List<Batch.Library.Models.Batch>)result;
 
-            if (skill == "C#")
-            {
-                Assert.Equal(2, testC.Count);
-            }
-            if (skill == "Java")
-            {
-                Assert.Equal(1, testC.Count);
-            }
+            Assert.Equal(num, testC.FindAll(x => x.BatchSkill == skill).Count);
+
         }
 
         /// <summary>
-        /// Compare expected result with result from GetByLocation(Address)
+        /// Compare expected result with result from GetByLocation(string state)
         /// </summary>
         [Fact]
         void GetByLocationTest()
         {
-            Batch.Service.Controllers.BatchController controller = new Batch.Service.Controllers.BatchController(new MemoryUtility(), loggerFactory);
-
-            List<Batch.Library.Models.Batch> newBatch = new List<Batch.Library.Models.Batch>();
-            controller.storage.AddBatch(testBatch1);
-            controller.storage.AddBatch(testBatch2);
-            controller.storage.AddBatch(testBatch3);
-
+        
             List<Batch.Library.Models.Batch> testL = new List<Batch.Library.Models.Batch>();
-            var batchLocation = controller.GetByLocation("MA");
+            var batchLocation = controller.GetByLocation("AK");
             batchLocation.Wait();
             var res = batchLocation.Result as OkObjectResult;
             var result = res.Value;
