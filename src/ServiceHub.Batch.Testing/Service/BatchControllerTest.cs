@@ -101,7 +101,6 @@ namespace ServiceHub.Batch.Testing.Service
 
             List<Batch.Library.Models.Batch> newBatch2 = new List<Batch.Library.Models.Batch>();
             var actionResultTask = controller.Get();
-            actionResultTask.Wait();
             var res = actionResultTask.Result as OkObjectResult;
             var result = res.Value;
             newBatch2 = (List<Batch.Library.Models.Batch>)result;
@@ -127,7 +126,6 @@ namespace ServiceHub.Batch.Testing.Service
         {
             List<Batch.Library.Models.Batch> testC = new List<Batch.Library.Models.Batch>();
             var batchSkill = controller.GetBySkill(skill);
-            batchSkill.Wait();
             var res = batchSkill.Result as OkObjectResult;
             var result = res.Value;
             testC = (List<Batch.Library.Models.Batch>)result;
@@ -144,7 +142,6 @@ namespace ServiceHub.Batch.Testing.Service
 
             List<Batch.Library.Models.Batch> testL = new List<Batch.Library.Models.Batch>();
             var batchLocation = controller.GetByLocation("AK");
-            batchLocation.Wait();
             var res = batchLocation.Result as OkObjectResult;
             var result = res.Value;
             testL = (List<Batch.Library.Models.Batch>)result;

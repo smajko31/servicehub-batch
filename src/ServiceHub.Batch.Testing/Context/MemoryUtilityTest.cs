@@ -142,7 +142,6 @@ namespace ServiceHub.Batch.Testing
         [Fact]
         void GetAllBatchesTest()
         {
-            //storage.AddBatchAsync(testBatch3).Wait();
             List<Batch.Library.Models.Batch> batchList = storage.GetAllBatchesAsync().Result;
             Assert.NotNull(batchList);
         }
@@ -152,7 +151,6 @@ namespace ServiceHub.Batch.Testing
         [Fact]
         void AddBatchTest()
         {
-            //storage.AddBatchAsync(testBatch3).Wait();
             Batch.Library.Models.Batch compareBatch = storage.GetAllBatchesAsync().Result.Find(x => x.BatchId == testBatch3.BatchId);
             Assert.NotNull(compareBatch);
             //Assert.False(initialListSize == addBatchSize);
@@ -165,12 +163,11 @@ namespace ServiceHub.Batch.Testing
         [Fact]
         void UpdateBatchTest()
         {
-            //storage.AddBatchAsync(testBatch3).Wait();
             string newSkill = ".NET";
             Batch.Library.Models.Batch replacebatch = storage.GetAllBatchesAsync().Result.Find(x => x.BatchSkill == "Dynamics");
             int NETSize = storage.GetBatchesBySkillAsync(newSkill).Result.Count;
             replacebatch.BatchSkill = newSkill;
-            storage.UpdateBatchAsync(replacebatch).Wait();
+            storage.UpdateBatchAsync(replacebatch);
             int PostNETSize = storage.GetBatchesBySkillAsync(newSkill).Result.Count;
             Assert.False(NETSize == PostNETSize);
         }
@@ -180,9 +177,8 @@ namespace ServiceHub.Batch.Testing
         [Fact]
         void DeleteBatchTest()
         {
-            //storage.AddBatchAsync(testBatch3).Wait();
             int size = storage.GetAllBatchesAsync().Result.Count;
-            storage.DeleteBatchAsync(testBatch3.BatchId).Wait();
+            storage.DeleteBatchAsync(testBatch3.BatchId);
             int sizeAfterDelete = storage.GetAllBatchesAsync().Result.Count;
             Assert.False(sizeAfterDelete == size);
         }
@@ -197,7 +193,6 @@ namespace ServiceHub.Batch.Testing
         [InlineData("Dynamics",1)]
         void GetBatchesBySkillTest(string skill, int expected)
         {
-            //storage.AddBatchAsync(testBatch3).Wait();
             List<Batch.Library.Models.Batch> collection = new List<Batch.Library.Models.Batch>();
             collection = storage.GetBatchesBySkillAsync(skill).Result;
             Assert.Equal(expected, collection.Count);
@@ -215,7 +210,6 @@ namespace ServiceHub.Batch.Testing
         [InlineData("VA", 2)]
         void GetBatchesByLocationTest(string state, int expected)
         {
-            //storage.AddBatchAsync(testBatch3).Wait();
             List<Batch.Library.Models.Batch> collection = new List<Batch.Library.Models.Batch>();
             collection = storage.GetBatchesByLocationAsync(state).Result;
             Assert.Equal(expected, collection.Count);
