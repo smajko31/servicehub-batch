@@ -23,22 +23,18 @@ namespace ServiceHub.Batch.Testing.Service
         static ILoggerFactory loggerFactory = new LoggerFactory();
         Batch.Service.Controllers.BatchController controller = new Batch.Service.Controllers.BatchController(new MemoryUtility(), loggerFactory);
 
-        public Task InitializeAsync()
+        public async Task InitializeAsync()
         {
-            controller.storage.AddBatchAsync(testBatch1);
-            controller.storage.AddBatchAsync(testBatch2);
-            controller.storage.AddBatchAsync(testBatch3);
-
-            return Task.CompletedTask;
+            await controller.storage.AddBatchAsync(testBatch1);
+            await controller.storage.AddBatchAsync(testBatch2);
+            await controller.storage.AddBatchAsync(testBatch3);
         }
 
-        public Task DisposeAsync()
+        public async Task DisposeAsync()
         {
-            controller.storage.DeleteBatchAsync(testBatch1.BatchId);
-            controller.storage.DeleteBatchAsync(testBatch2.BatchId);
-            controller.storage.DeleteBatchAsync(testBatch3.BatchId);
-
-            return Task.CompletedTask;
+            await controller.storage.DeleteBatchAsync(testBatch1.BatchId);
+            await controller.storage.DeleteBatchAsync(testBatch2.BatchId);
+            await controller.storage.DeleteBatchAsync(testBatch3.BatchId);
         }
         /// <summary>
         /// Instantiate dummy Address and Batch models
@@ -94,14 +90,14 @@ namespace ServiceHub.Batch.Testing.Service
         /// Test getting all batches from the database. Compare dummy data from MemoryUtility to BatchController.Get()
         /// </summary>
         [Fact]
-        public void GetAllTest()
+        async Task GetAllTest()
         {
             List<Batch.Library.Models.Batch> newBatch = new List<Batch.Library.Models.Batch>();
-            newBatch = controller.storage.GetAllBatchesAsync().Result;
+            newBatch = await controller.storage.GetAllBatchesAsync();
 
             List<Batch.Library.Models.Batch> newBatch2 = new List<Batch.Library.Models.Batch>();
-            var actionResultTask = controller.Get();
-            var res = actionResultTask.Result as OkObjectResult;
+            var actionResultTask = await controller.Get();
+            var res = actionResultTask as OkObjectResult;
             var result = res.Value;
             newBatch2 = (List<Batch.Library.Models.Batch>)result;
             Assert.Equal(newBatch.Count, newBatch2.Count);
@@ -122,11 +118,11 @@ namespace ServiceHub.Batch.Testing.Service
         /// <param name="skill">Test "Test1" input and "Test2" input</param>
         [Theory]
         [MemberData(nameof(SkillTestCases))]
-        void GetBySkillTest(string skill, int num)
+        async Task GetBySkillTest(string skill, int num)
         {
             List<Batch.Library.Models.Batch> testC = new List<Batch.Library.Models.Batch>();
-            var batchSkill = controller.GetBySkill(skill);
-            var res = batchSkill.Result as OkObjectResult;
+            var batchSkill = await controller.GetBySkill(skill);
+            var res = batchSkill as OkObjectResult;
             var result = res.Value;
             testC = (List<Batch.Library.Models.Batch>)result;
 
@@ -137,12 +133,12 @@ namespace ServiceHub.Batch.Testing.Service
         /// Compare expected result with result from GetByLocation(string state)
         /// </summary>
         [Fact]
-        void GetByLocationTest()
+        async Task GetByLocationTest()
         {
 
             List<Batch.Library.Models.Batch> testL = new List<Batch.Library.Models.Batch>();
-            var batchLocation = controller.GetByLocation("AK");
-            var res = batchLocation.Result as OkObjectResult;
+            var batchLocation = await controller.GetByLocation("AK");
+            var res = batchLocation as OkObjectResult;
             var result = res.Value;
             testL = (List<Batch.Library.Models.Batch>)result;
 

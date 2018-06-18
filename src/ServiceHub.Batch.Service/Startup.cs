@@ -21,15 +21,30 @@ namespace ServiceHub.Batch.Service
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IUtility, BatchRepository>();
+            const string connectionString = @"mongodb://db";
             services.AddMvc();
-            services.AddSingleton<BatchRepository>();
+            services.AddSingleton<IUtility, BatchRepository>(serviceProvider =>
+            {
+                return new BatchRepository(
+                    new MongoClient(connectionString)
+                    .GetDatabase("batchdb")
+                    .GetCollection<Context.Models.Batch>("batches"));
+            });
+            services.AddSingleton<BatchRepository>(serviceProvider =>
+            {
+                return new BatchRepository(
+                    new MongoClient(connectionString)
+                    .GetDatabase("batchdb")
+                    .GetCollection<Context.Models.Batch>("batches"));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddApplicationInsights(app.ApplicationServices);
+            ApplicationLogging.ConfigureLogger("service");
+            ApplicationLogging.LoggerFactory = loggerFactory;
 
             if (env.IsDevelopment())
             {

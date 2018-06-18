@@ -1,11 +1,8 @@
 ﻿using System;
 using Xunit;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using ServiceHub.Batch.Context.Utilities;
-using ServiceHub.Batch.Service;
-using Microsoft.Extensions.Logging;
 
 namespace ServiceHub.Batch.Testing
 {
@@ -17,22 +14,18 @@ namespace ServiceHub.Batch.Testing
         Batch.Library.Models.Batch testBatch2;
         Batch.Library.Models.Batch testBatch3;
 
-        public Task InitializeAsync()
+        public async Task InitializeAsync()
         {
-            storage.AddBatchAsync(testBatch1);
-            storage.AddBatchAsync(testBatch2);
-            storage.AddBatchAsync(testBatch3);
-
-            return Task.CompletedTask;
+            await storage.AddBatchAsync(testBatch1);
+            await storage.AddBatchAsync(testBatch2);
+            await storage.AddBatchAsync(testBatch3);
         }
 
-        public Task DisposeAsync()
+        public async Task DisposeAsync()
         {
-            storage.DeleteBatchAsync(testBatch1.BatchId);
-            storage.DeleteBatchAsync(testBatch2.BatchId);
-            storage.DeleteBatchAsync(testBatch3.BatchId);
-
-            return Task.CompletedTask;
+            await storage.DeleteBatchAsync(testBatch1.BatchId);
+            await storage.DeleteBatchAsync(testBatch2.BatchId);
+            await storage.DeleteBatchAsync(testBatch3.BatchId);
         }
 
         public MemoryUtilityTest()
@@ -139,20 +132,19 @@ namespace ServiceHub.Batch.Testing
         /// Test that a list of all of the batches gets returned
         /// </summary>
         [Fact]
-        void GetAllBatchesTest()
+        async Task GetAllBatchesTest()
         {
-            List<Batch.Library.Models.Batch> batchList = storage.GetAllBatchesAsync().Result;
+            List<Batch.Library.Models.Batch> batchList = await storage.GetAllBatchesAsync();
             Assert.NotNull(batchList);
         }
         /// <summary>
         /// Test that a new batch can be added to the batchlist
         /// </summary>
         [Fact]
-        void AddBatchTest()
+        async Task AddBatchTest()
         {
-            Batch.Library.Models.Batch compareBatch = storage.GetAllBatchesAsync().Result.Find(x => x.BatchId == testBatch3.BatchId);
+            Batch.Library.Models.Batch compareBatch = (await storage.GetAllBatchesAsync()).Find(x => x.BatchId == testBatch3.BatchId);
             Assert.NotNull(compareBatch);
-            //Assert.False(initialListSize == addBatchSize);
         }
         
         /// <summary>
@@ -160,25 +152,25 @@ namespace ServiceHub.Batch.Testing
         /// of batches
         /// </summary>
         [Fact]
-        void UpdateBatchTest()
+        async Task UpdateBatchTest()
         {
             string newSkill = ".NET";
-            Batch.Library.Models.Batch replacebatch = storage.GetAllBatchesAsync().Result.Find(x => x.BatchSkill == "Dynamics");
-            int NETSize = storage.GetBatchesBySkillAsync(newSkill).Result.Count;
+            Batch.Library.Models.Batch replacebatch = (await storage.GetAllBatchesAsync()).Find(x => x.BatchSkill == "Dynamics");
+            int NETSize = (await storage.GetBatchesBySkillAsync(newSkill)).Count;
             replacebatch.BatchSkill = newSkill;
-            storage.UpdateBatchAsync(replacebatch);
-            int PostNETSize = storage.GetBatchesBySkillAsync(newSkill).Result.Count;
+            await storage.UpdateBatchAsync(replacebatch);
+            int PostNETSize = (await storage.GetBatchesBySkillAsync(newSkill)).Count;
             Assert.False(NETSize == PostNETSize);
         }
         /// <summary>
         /// Test that a batch gets deleted from the batch list
         /// </summary>
         [Fact]
-        void DeleteBatchTest()
+        async Task DeleteBatchTestAsync()
         {
-            int size = storage.GetAllBatchesAsync().Result.Count;
-            storage.DeleteBatchAsync(testBatch3.BatchId);
-            int sizeAfterDelete = storage.GetAllBatchesAsync().Result.Count;
+            int size = (await storage.GetAllBatchesAsync()).Count;
+            await storage.DeleteBatchAsync(testBatch3.BatchId);
+            int sizeAfterDelete = (await storage.GetAllBatchesAsync()).Count;
             Assert.False(sizeAfterDelete == size);
         }
         /// <summary>
@@ -190,10 +182,10 @@ namespace ServiceHub.Batch.Testing
         [InlineData("Java", 1)]
         [InlineData(".NET", 1)]
         [InlineData("Dynamics",1)]
-        void GetBatchesBySkillTest(string skill, int expected)
+        async Task GetBatchesBySkillTest(string skill, int expected)
         {
             List<Batch.Library.Models.Batch> collection = new List<Batch.Library.Models.Batch>();
-            collection = storage.GetBatchesBySkillAsync(skill).Result;
+            collection = await storage.GetBatchesBySkillAsync(skill);
             Assert.Equal(expected, collection.Count);
         }
         /// <summary>
@@ -207,10 +199,10 @@ namespace ServiceHub.Batch.Testing
         [InlineData("FL", 1)]
         [InlineData("NY", 0)]
         [InlineData("VA", 2)]
-        void GetBatchesByLocationTest(string state, int expected)
+        async Task GetBatchesByLocationTest(string state, int expected)
         {
             List<Batch.Library.Models.Batch> collection = new List<Batch.Library.Models.Batch>();
-            collection = storage.GetBatchesByLocationAsync(state).Result;
+            collection = await storage.GetBatchesByLocationAsync(state);
             Assert.Equal(expected, collection.Count);
         }
     }
