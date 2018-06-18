@@ -3,14 +3,13 @@ using ServiceHub.Batch.Context.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 public static class SeedData
 {
     public static async void Initialize(IServiceProvider serviceProvider)
     {
         var context = serviceProvider.GetRequiredService<BatchRepository>();
-        if (context.GetAllBatchesAsync() == null || !context.GetAllBatchesAsync().Result.Any())
+        if (await context.GetAllBatchesAsync() == null || !(await context.GetAllBatchesAsync()).Any())
         {
             try
             {
