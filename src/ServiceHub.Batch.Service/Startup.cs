@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,20 +21,13 @@ namespace ServiceHub.Batch.Service
         {
             const string connectionString = @"mongodb://db";
             services.AddMvc();
-            services.AddSingleton<IUtility, BatchRepository>(serviceProvider =>
-            {
-                return new BatchRepository(
-                    new MongoClient(connectionString)
+            services.AddSingleton<IUtility, BatchRepository>();
+            services.AddSingleton<BatchRepository>();
+            services.AddSingleton(mc =>
+                new MongoClient(connectionString)
                     .GetDatabase("batchdb")
-                    .GetCollection<Context.Models.Batch>("batches"));
-            });
-            services.AddSingleton<BatchRepository>(serviceProvider =>
-            {
-                return new BatchRepository(
-                    new MongoClient(connectionString)
-                    .GetDatabase("batchdb")
-                    .GetCollection<Context.Models.Batch>("batches"));
-            });
+                    .GetCollection<Context.Models.Batch>("batches")
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

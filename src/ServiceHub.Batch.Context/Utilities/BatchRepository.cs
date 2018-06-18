@@ -1,10 +1,7 @@
 ﻿using System;
-using MongoDB.Bson;
 using MongoDB.Driver;
 using ServiceHub.Batch.Library;
-using ServiceHub.Batch.Context;
 using System.Collections.Generic;
-using System.Security.Authentication;
 using System.Threading.Tasks;
 
 namespace ServiceHub.Batch.Context.Utilities
