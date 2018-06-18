@@ -19,8 +19,6 @@ namespace ServiceHub.Batch.Testing.Service
         readonly Batch.Library.Models.Batch testBatch1;
         readonly Batch.Library.Models.Batch testBatch2;
         readonly Batch.Library.Models.Batch testBatch3;
-
-        static ILoggerFactory loggerFactory = new LoggerFactory();
         readonly Batch.Service.Controllers.BatchController controller;
 
         public async Task InitializeAsync()
@@ -43,7 +41,7 @@ namespace ServiceHub.Batch.Testing.Service
         /// 
         public BatchControllerTest()
         {
-            controller = new Batch.Service.Controllers.BatchController(new MemoryUtility(), loggerFactory);
+            controller = new Batch.Service.Controllers.BatchController(new MemoryUtility(), new LoggerFactory());
             testBatch1 = new Batch.Library.Models.Batch()
             {
 
