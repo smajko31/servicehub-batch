@@ -9,13 +9,31 @@ using Microsoft.Extensions.Logging;
 
 namespace ServiceHub.Batch.Testing
 {
-    public class MemoryUtilityTest : IDisposable
+    public class MemoryUtilityTest : IAsyncLifetime
     {
         /// <value>Use storage as an IoC container</summary>
         Storage storage;
         Batch.Library.Models.Batch testBatch1;
         Batch.Library.Models.Batch testBatch2;
         Batch.Library.Models.Batch testBatch3;
+
+        public Task InitializeAsync()
+        {
+            storage.AddBatchAsync(testBatch1);
+            storage.AddBatchAsync(testBatch2);
+            storage.AddBatchAsync(testBatch3);
+
+            return Task.CompletedTask;
+        }
+
+        public Task DisposeAsync()
+        {
+            storage.DeleteBatchAsync(testBatch1.BatchId);
+            storage.DeleteBatchAsync(testBatch2.BatchId);
+            storage.DeleteBatchAsync(testBatch3.BatchId);
+
+            return Task.CompletedTask;
+        }
 
         public MemoryUtilityTest()
         {
@@ -116,22 +134,15 @@ namespace ServiceHub.Batch.Testing
                         }
             };
             storage = new Storage(new MemoryUtility());
-            storage.AddBatchAsync(testBatch1).Wait();
-            storage.AddBatchAsync(testBatch2).Wait();
         }
-        public void Dispose()
-        {
-            storage.DeleteBatchAsync(testBatch1.BatchId).Wait();
-            storage.DeleteBatchAsync(testBatch2.BatchId).Wait();
-            storage.DeleteBatchAsync(testBatch3.BatchId).Wait();
-        }
+
         /// <summary>
         /// Test that a list of all of the batches gets returned
         /// </summary>
         [Fact]
         void GetAllBatchesTest()
         {
-            storage.AddBatchAsync(testBatch3).Wait();
+            //storage.AddBatchAsync(testBatch3).Wait();
             List<Batch.Library.Models.Batch> batchList = storage.GetAllBatchesAsync().Result;
             Assert.NotNull(batchList);
         }
@@ -141,7 +152,7 @@ namespace ServiceHub.Batch.Testing
         [Fact]
         void AddBatchTest()
         {
-            storage.AddBatchAsync(testBatch3).Wait();
+            //storage.AddBatchAsync(testBatch3).Wait();
             Batch.Library.Models.Batch compareBatch = storage.GetAllBatchesAsync().Result.Find(x => x.BatchId == testBatch3.BatchId);
             Assert.NotNull(compareBatch);
             //Assert.False(initialListSize == addBatchSize);
@@ -154,7 +165,7 @@ namespace ServiceHub.Batch.Testing
         [Fact]
         void UpdateBatchTest()
         {
-            storage.AddBatchAsync(testBatch3).Wait();
+            //storage.AddBatchAsync(testBatch3).Wait();
             string newSkill = ".NET";
             Batch.Library.Models.Batch replacebatch = storage.GetAllBatchesAsync().Result.Find(x => x.BatchSkill == "Dynamics");
             int NETSize = storage.GetBatchesBySkillAsync(newSkill).Result.Count;
@@ -169,7 +180,7 @@ namespace ServiceHub.Batch.Testing
         [Fact]
         void DeleteBatchTest()
         {
-            storage.AddBatchAsync(testBatch3).Wait();
+            //storage.AddBatchAsync(testBatch3).Wait();
             int size = storage.GetAllBatchesAsync().Result.Count;
             storage.DeleteBatchAsync(testBatch3.BatchId).Wait();
             int sizeAfterDelete = storage.GetAllBatchesAsync().Result.Count;
@@ -186,7 +197,7 @@ namespace ServiceHub.Batch.Testing
         [InlineData("Dynamics",1)]
         void GetBatchesBySkillTest(string skill, int expected)
         {
-            storage.AddBatchAsync(testBatch3).Wait();
+            //storage.AddBatchAsync(testBatch3).Wait();
             List<Batch.Library.Models.Batch> collection = new List<Batch.Library.Models.Batch>();
             collection = storage.GetBatchesBySkillAsync(skill).Result;
             Assert.Equal(expected, collection.Count);
@@ -204,7 +215,7 @@ namespace ServiceHub.Batch.Testing
         [InlineData("VA", 2)]
         void GetBatchesByLocationTest(string state, int expected)
         {
-            storage.AddBatchAsync(testBatch3).Wait();
+            //storage.AddBatchAsync(testBatch3).Wait();
             List<Batch.Library.Models.Batch> collection = new List<Batch.Library.Models.Batch>();
             collection = storage.GetBatchesByLocationAsync(state).Result;
             Assert.Equal(expected, collection.Count);

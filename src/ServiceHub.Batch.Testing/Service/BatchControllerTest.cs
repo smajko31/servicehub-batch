@@ -5,12 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Immutable;
 using ServiceHub.Batch.Context.Utilities;
+using System.Threading.Tasks;
 
 [assembly: CollectionBehavior(DisableTestParallelization = true)]
 
 namespace ServiceHub.Batch.Testing.Service
 {
-    public class BatchControllerTest : IDisposable
+    public class BatchControllerTest : IAsyncLifetime
     {
         /// <summary>
         /// Initialize dummy data Address and Batch models
@@ -22,13 +23,30 @@ namespace ServiceHub.Batch.Testing.Service
         static ILoggerFactory loggerFactory = new LoggerFactory();
         Batch.Service.Controllers.BatchController controller = new Batch.Service.Controllers.BatchController(new MemoryUtility(), loggerFactory);
 
+        public Task InitializeAsync()
+        {
+            controller.storage.AddBatchAsync(testBatch1);
+            controller.storage.AddBatchAsync(testBatch2);
+            controller.storage.AddBatchAsync(testBatch3);
+
+            return Task.CompletedTask;
+        }
+
+        public Task DisposeAsync()
+        {
+            controller.storage.DeleteBatchAsync(testBatch1.BatchId);
+            controller.storage.DeleteBatchAsync(testBatch2.BatchId);
+            controller.storage.DeleteBatchAsync(testBatch3.BatchId);
+
+            return Task.CompletedTask;
+        }
         /// <summary>
         /// Instantiate dummy Address and Batch models
         /// </summary>
         /// 
         public BatchControllerTest()
         {
-             testBatch1 = new Batch.Library.Models.Batch()
+            testBatch1 = new Batch.Library.Models.Batch()
             {
 
                 BatchId = Guid.NewGuid(),
@@ -69,11 +87,7 @@ namespace ServiceHub.Batch.Testing.Service
                 UserIds = new List<Guid> {
                         new Guid("b165e54e-30e3-4f5c-8f94-83e55d8acb3b")
                 }
-
             };
-            controller.storage.AddBatchAsync(testBatch1).Wait();
-            controller.storage.AddBatchAsync(testBatch2).Wait();
-            controller.storage.AddBatchAsync(testBatch3).Wait();
         }
 
         /// <summary>
@@ -127,7 +141,7 @@ namespace ServiceHub.Batch.Testing.Service
         [Fact]
         void GetByLocationTest()
         {
-        
+
             List<Batch.Library.Models.Batch> testL = new List<Batch.Library.Models.Batch>();
             var batchLocation = controller.GetByLocation("AK");
             batchLocation.Wait();
@@ -136,13 +150,6 @@ namespace ServiceHub.Batch.Testing.Service
             testL = (List<Batch.Library.Models.Batch>)result;
 
             Assert.Equal(2, testL.Count);
-        }
-
-        public void Dispose()
-        {
-            controller.storage.DeleteBatchAsync(testBatch1.BatchId).Wait();
-            controller.storage.DeleteBatchAsync(testBatch2.BatchId).Wait();
-            controller.storage.DeleteBatchAsync(testBatch3.BatchId).Wait();
         }
     }
 }
