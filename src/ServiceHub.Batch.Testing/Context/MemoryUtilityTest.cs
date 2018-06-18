@@ -135,7 +135,6 @@ namespace ServiceHub.Batch.Testing
             };
             storage = new Storage(new MemoryUtility());
         }
-
         /// <summary>
         /// Test that a list of all of the batches gets returned
         /// </summary>
