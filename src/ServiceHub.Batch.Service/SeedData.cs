@@ -13,7 +13,8 @@ namespace ServiceHub.Batch.Service
         public static async Task Initialize(IServiceProvider serviceProvider)
         {
             var context = serviceProvider.GetRequiredService<BatchRepository>();
-            if (await context.GetAllBatchesAsync() == null || !(await context.GetAllBatchesAsync()).Any())
+            var batches = await context.GetAllBatchesAsync();
+            if (batches == null || !batches.Any())
             {
                 ILogger logger = ApplicationLogging.CreateLogger();
 
