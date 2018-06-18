@@ -10,11 +10,11 @@ public static class SeedData
     public static void Initialize(IServiceProvider serviceProvider)
     {
         var context = serviceProvider.GetRequiredService<BatchRepository>();
-        if (context.GetAllBatches() == null || !context.GetAllBatches().Result.Any())
+        if (context.GetAllBatchesAsync() == null || !context.GetAllBatchesAsync().Result.Any())
         {
             try
             {
-                Task.Run(() => context.AddBatch(
+                Task.Run(() => context.AddBatchAsync(
                     new ServiceHub.Batch.Library.Models.Batch()
                     {
                         BatchId = Guid.NewGuid(),
@@ -49,7 +49,7 @@ public static class SeedData
                         }
                     }));
 
-                Task.Run(() => context.AddBatch(
+                Task.Run(() => context.AddBatchAsync(
                 new ServiceHub.Batch.Library.Models.Batch()
                 {
                     BatchId = Guid.NewGuid(),
@@ -84,7 +84,7 @@ public static class SeedData
                         new Guid("522d473b-2294-4151-9b81-885cbcef8d82")
                         }
                 }));
-                Task.Run(() => context.AddBatch(
+                Task.Run(() => context.AddBatchAsync(
                     new ServiceHub.Batch.Library.Models.Batch()
                     {
                         BatchId = Guid.NewGuid(),

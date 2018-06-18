@@ -14,7 +14,7 @@ namespace ServiceHub.Batch.Context.Utilities
         /// Gets all the batches from the list
         /// </summary>
         /// <returns>A list of all of the batches</returns>
-        public async Task<List<Library.Models.Batch>> GetAllBatches()
+        public async Task<List<Library.Models.Batch>> GetAllBatchesAsync()
         {
             return await Task.Run(() => ModelMapper.ToLibraryList(memList));
         }
@@ -22,7 +22,7 @@ namespace ServiceHub.Batch.Context.Utilities
         /// Adds a batch to the batch list
         /// </summary>
         /// <param name="batch">Batch object</param>
-        public async Task AddBatch(Library.Models.Batch batch)
+        public async Task AddBatchAsync(Library.Models.Batch batch)
         {
             await Task.Run(() => memList.Add(ModelMapper.ToContextBatchModel(batch)));
         }
@@ -30,7 +30,7 @@ namespace ServiceHub.Batch.Context.Utilities
         /// Modifies the specified batch in the list with new information
         /// </summary>
         /// <param name="batch">Batch object</param>
-        public async Task UpdateBatch(Library.Models.Batch batch)
+        public async Task UpdateBatchAsync(Library.Models.Batch batch)
         {
             int index = await Task.Run(() => memList.FindIndex(b => b.BatchId == batch.BatchId));
             if (index >= 0)
@@ -40,7 +40,7 @@ namespace ServiceHub.Batch.Context.Utilities
         /// Deletes a batch from the list
         /// </summary>
         /// <param name="id">Batch ID</param>
-        public async Task DeleteBatch(Guid id)
+        public async Task DeleteBatchAsync(Guid id)
         {
             await Task.Run(() => memList.Remove(memList.Find(x => x.BatchId == id)));
         }
@@ -49,7 +49,7 @@ namespace ServiceHub.Batch.Context.Utilities
         /// </summary>
         /// <param name="skill">Batch skill</param>
         /// <returns>List of batches with the same skill</returns>
-        public async Task<List<Library.Models.Batch>> GetBatchesBySkill(string skill)
+        public async Task<List<Library.Models.Batch>> GetBatchesBySkillAsync(string skill)
         {
             return ModelMapper.ToLibraryList(await Task.Run(() => memList.FindAll(x => x.BatchSkill == skill)));
         }
@@ -59,7 +59,7 @@ namespace ServiceHub.Batch.Context.Utilities
         /// <param name="city">City</param>
         /// <param name="state">State</param>
         /// <returns></returns>
-        public async Task<List<Library.Models.Batch>> GetBatchesByLocation(string state)
+        public async Task<List<Library.Models.Batch>> GetBatchesByLocationAsync(string state)
         {
             return ModelMapper.ToLibraryList(await Task.Run(() => memList.FindAll(x => x.State == state)));
         }
