@@ -12,13 +12,10 @@ namespace ServiceHub.Batch.Context.Utilities
     public class BatchRepository : IUtility
     {
         private readonly IMongoCollection<Context.Models.Batch> _batches;
-        const string connectionString = @"mongodb://db";
 
-        public BatchRepository()
+        public BatchRepository(IMongoCollection<Context.Models.Batch> batches)
         {
-            _batches = new MongoClient(connectionString)
-                .GetDatabase("batchdb")
-                .GetCollection<Context.Models.Batch>("batches");
+            _batches = batches;
         }
 
         /// <summary>
