@@ -9,10 +9,8 @@ namespace ServiceHub.Batch.Service.Controllers
 {
     public class BatchController : BaseController
     {
-        /// <summary>
-        /// Repository
-        /// </summary>
         public Storage storage;
+        private new readonly ILogger logger;
 
         /// <summary>
         /// Overload constructor to dependency inject repository class
@@ -21,6 +19,7 @@ namespace ServiceHub.Batch.Service.Controllers
         public BatchController(IUtility util, ILoggerFactory loggerFactory) : base(loggerFactory)
         {
             storage = new Storage(util);
+            logger = loggerFactory.CreateLogger("requests");
         }
 
         /// <summary>
@@ -28,15 +27,22 @@ namespace ServiceHub.Batch.Service.Controllers
         /// </summary>
         /// <returns>A List of all the batch models from the database</returns>
         [HttpGet]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Library.Models.Batch>))]
         [Route("api/Batches")]
         public async Task<IActionResult> Get()
         {
-            var myTask = Task.Run(() => storage.GetAllBatchesAsync());
-            List<Library.Models.Batch> result = await myTask;
-
-            return Ok(result);
+            try
+            {
+                var myTask = Task.Run(() => storage.GetAllBatchesAsync());
+                List<Library.Models.Batch> result = await myTask;
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.ToString());
+                return StatusCode(500);
+            }
         }
 
         /// <summary>
@@ -45,14 +51,22 @@ namespace ServiceHub.Batch.Service.Controllers
         /// <param name="skill">Batch skill ex. Java</param>
         /// <returns>List of Batches</returns>
         [HttpPost]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Library.Models.Batch>))]
         [Route("api/Batches/skill")]
         public async Task<IActionResult> GetBySkill([FromBody] string skill)
         {
-            var myTask = Task.Run(() => storage.GetBatchesBySkillAsync(skill));
-            List<Library.Models.Batch> result = await myTask;
-            return Ok(result);
+            try
+            {
+                var myTask = Task.Run(() => storage.GetBatchesBySkillAsync(skill));
+                List<Library.Models.Batch> result = await myTask;
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.ToString());
+                return StatusCode(500);
+            }
         }
 
         /// <summary>
@@ -61,14 +75,22 @@ namespace ServiceHub.Batch.Service.Controllers
         /// <param name="myAddress">Address model with filled City and State</param>
         /// <returns>List of Batches</returns>
         [HttpPost]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Library.Models.Batch>))]
         [Route("api/Batches/location")]
         public async Task<IActionResult> GetByLocation([FromBody] string state)
         {
-            var myTask = Task.Run(() => storage.GetBatchesByLocationAsync(state));
-            List<Library.Models.Batch> result = await myTask;
-            return Ok(result);
+            try
+            {
+                var myTask = Task.Run(() => storage.GetBatchesByLocationAsync(state));
+                List<Library.Models.Batch> result = await myTask;
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.ToString());
+                return StatusCode(500);
+            }
         }
     }
 }

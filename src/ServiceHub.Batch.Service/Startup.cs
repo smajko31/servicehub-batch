@@ -43,6 +43,8 @@ namespace ServiceHub.Batch.Service
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddApplicationInsights(app.ApplicationServices);
+            ApplicationLogging.ConfigureLogger("service");
+            ApplicationLogging.LoggerFactory = loggerFactory;
 
             if (env.IsDevelopment())
             {
