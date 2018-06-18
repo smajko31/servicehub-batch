@@ -34,8 +34,7 @@ namespace ServiceHub.Batch.Service.Controllers
         {
             try
             {
-                var myTask = Task.Run(() => storage.GetAllBatchesAsync());
-                List<Library.Models.Batch> result = await myTask;
+                List<Library.Models.Batch> result = await storage.GetAllBatchesAsync();
                 return Ok(result);
             }
             catch (Exception e)
@@ -58,8 +57,7 @@ namespace ServiceHub.Batch.Service.Controllers
         {
             try
             {
-                var myTask = Task.Run(() => storage.GetBatchesBySkillAsync(skill));
-                List<Library.Models.Batch> result = await myTask;
+                List<Library.Models.Batch> result = await storage.GetBatchesBySkillAsync(skill);
                 return Ok(result);
             }
             catch (Exception e)
@@ -82,8 +80,7 @@ namespace ServiceHub.Batch.Service.Controllers
         {
             try
             {
-                var myTask = Task.Run(() => storage.GetBatchesByLocationAsync(state));
-                List<Library.Models.Batch> result = await myTask;
+                List<Library.Models.Batch> result = await storage.GetBatchesByLocationAsync(state);
                 return Ok(result);
             }
             catch (Exception e)
