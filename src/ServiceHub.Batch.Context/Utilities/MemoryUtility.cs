@@ -14,44 +14,47 @@ namespace ServiceHub.Batch.Context.Utilities
         /// Gets all the batches from the list
         /// </summary>
         /// <returns>A list of all of the batches</returns>
-        public async Task<List<Library.Models.Batch>> GetAllBatchesAsync()
+        public Task<List<Library.Models.Batch>> GetAllBatchesAsync()
         {
-            return await Task.FromResult(ModelMapper.ToLibraryList(memList));
+            return Task.FromResult(ModelMapper.ToLibraryList(memList));
         }
         /// <summary>
         /// Adds a batch to the batch list
         /// </summary>
         /// <param name="batch">Batch object</param>
-        public async Task AddBatchAsync(Library.Models.Batch batch)
+        public Task AddBatchAsync(Library.Models.Batch batch)
         {
             memList.Add(ModelMapper.ToContextBatchModel(batch));
+            return Task.CompletedTask;
         }
         /// <summary>
         /// Modifies the specified batch in the list with new information
         /// </summary>
         /// <param name="batch">Batch object</param>
-        public async Task UpdateBatchAsync(Library.Models.Batch batch)
+        public Task UpdateBatchAsync(Library.Models.Batch batch)
         {
             int index = memList.FindIndex(b => b.BatchId == batch.BatchId);
             if (index >= 0)
                 memList[index] = ModelMapper.ToContextBatchModel(batch);
+            return Task.CompletedTask;
         }
         /// <summary>
         /// Deletes a batch from the list
         /// </summary>
         /// <param name="id">Batch ID</param>
-        public async Task DeleteBatchAsync(Guid id)
+        public Task DeleteBatchAsync(Guid id)
         {
             memList.Remove(memList.Find(x => x.BatchId == id));
+            return Task.CompletedTask;
         }
         /// <summary>
         /// Returns a list of all the batches that match the specified skill
         /// </summary>
         /// <param name="skill">Batch skill</param>
         /// <returns>List of batches with the same skill</returns>
-        public async Task<List<Library.Models.Batch>> GetBatchesBySkillAsync(string skill)
+        public Task<List<Library.Models.Batch>> GetBatchesBySkillAsync(string skill)
         {
-            return await Task.FromResult(ModelMapper.ToLibraryList(memList.FindAll(x => x.BatchSkill == skill)));
+            return Task.FromResult(ModelMapper.ToLibraryList(memList.FindAll(x => x.BatchSkill == skill)));
         }
         /// <summary>
         /// Gets a list of all of the batches that match the specified city and state
@@ -59,9 +62,9 @@ namespace ServiceHub.Batch.Context.Utilities
         /// <param name="city">City</param>
         /// <param name="state">State</param>
         /// <returns></returns>
-        public async Task<List<Library.Models.Batch>> GetBatchesByLocationAsync(string state)
+        public Task<List<Library.Models.Batch>> GetBatchesByLocationAsync(string state)
         {
-            return await Task.FromResult(ModelMapper.ToLibraryList(memList.FindAll(x => x.State == state)));
+            return Task.FromResult(ModelMapper.ToLibraryList(memList.FindAll(x => x.State == state)));
         }
     }
 }

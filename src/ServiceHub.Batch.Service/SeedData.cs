@@ -1,17 +1,22 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using ServiceHub.Batch.Context.Utilities;
+using ServiceHub.Batch.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 public static class SeedData
 {
+    private static ILogger logger;
+
     public static async void Initialize(IServiceProvider serviceProvider)
     {
         var context = serviceProvider.GetRequiredService<BatchRepository>();
-        if (context.GetAllBatchesAsync() == null || !context.GetAllBatchesAsync().Result.Any())
+        if (await context.GetAllBatchesAsync() == null || !(await context.GetAllBatchesAsync()).Any())
         {
+            logger = ApplicationLogging.CreateLogger();
+
             try
             {
                 await context.AddBatchAsync(
@@ -115,7 +120,10 @@ public static class SeedData
                         }
                     });
             }
-            catch { throw; }
+            catch (Exception e)
+            {
+                logger.LogError(e.ToString());
+            }
         }
     }
 }
