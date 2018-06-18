@@ -9,8 +9,12 @@ namespace ServiceHub.Batch.Service.Controllers
 {
     public class BatchController : BaseController
     {
-        public Storage storage;
         private new readonly ILogger logger;
+        public Storage storage
+        {
+            get { return storage; }
+            set { storage = value; }
+        }
 
         /// <summary>
         /// Overload constructor to dependency inject repository class
