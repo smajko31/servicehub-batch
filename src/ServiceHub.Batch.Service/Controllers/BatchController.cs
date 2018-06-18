@@ -33,7 +33,7 @@ namespace ServiceHub.Batch.Service.Controllers
         [Route("api/Batches")]
         public async Task<IActionResult> Get()
         {
-            var myTask = Task.Run(() => storage.GetAllBatches());
+            var myTask = Task.Run(() => storage.GetAllBatchesAsync());
             List<Library.Models.Batch> result = await myTask;
 
             return Ok(result);
@@ -50,7 +50,7 @@ namespace ServiceHub.Batch.Service.Controllers
         [Route("api/Batches/skill")]
         public async Task<IActionResult> GetBySkill([FromBody] string skill)
         {
-            var myTask = Task.Run(() => storage.GetBatchesBySkill(skill));
+            var myTask = Task.Run(() => storage.GetBatchesBySkillAsync(skill));
             List<Library.Models.Batch> result = await myTask;
             return Ok(result);
         }
@@ -66,7 +66,7 @@ namespace ServiceHub.Batch.Service.Controllers
         [Route("api/Batches/location")]
         public async Task<IActionResult> GetByLocation([FromBody] string state)
         {
-            var myTask = Task.Run(() => storage.GetBatchesByLocation(state));
+            var myTask = Task.Run(() => storage.GetBatchesByLocationAsync(state));
             List<Library.Models.Batch> result = await myTask;
             return Ok(result);
         }
