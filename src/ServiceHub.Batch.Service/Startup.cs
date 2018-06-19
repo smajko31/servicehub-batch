@@ -20,15 +20,14 @@ namespace ServiceHub.Batch.Service
 
         public void ConfigureServices(IServiceCollection services)
         {
-            //const string connectionString = @"mongodb://db";
-            const string connectionString = @"mongodb://cameron-wags:rp7KMfeoIp0KgM7dMMpnZDF9Cmtde0PIlQAQ9pdrpZZaZdO9Pqt9mk8VXl3upDpp2pyrzajfNvOm2JZtqfOzkQ==@cameron-wags.documents.azure.com:10255/?ssl=true&replicaSet=globaldb";
+            const string connectionString = @"mongodb://db";
             services.AddMvc();
             services.AddSingleton<IUtility, BatchRepository>();
             services.AddSingleton<BatchRepository>();
             services.AddSingleton(mc =>
                 new MongoClient(connectionString)
                     .GetDatabase("batchdb")
-                    .GetCollection<Context.Models.Batch>("batches2")
+                    .GetCollection<Context.Models.Batch>("batches")
             );
 
             services.AddSwaggerGen(c =>
